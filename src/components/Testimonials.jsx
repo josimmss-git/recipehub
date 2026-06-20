@@ -6,49 +6,74 @@ export default function Testimonials() {
   return (
     <section className="py-24 max-w-7xl mx-auto px-6 w-full">
       <div className="text-center mb-16">
-        <h2 className="text-3xl font-bold text-white md:text-4xl font-sans">Client Testimonials</h2>
-        <p className="text-slate-400 max-w-xl mx-auto text-sm mt-3">
-          Don't just take our word for it. Hear from leading organizers and attendees enjoying the platform.
+        <h2 className="text-3xl md:text-4xl font-bold text-white">
+          What Our Food Lovers Say
+        </h2>
+        <p className="text-slate-400 max-w-2xl mx-auto mt-3">
+          Discover how RecipeHub helps home cooks, food bloggers, and culinary
+          enthusiasts share recipes, gain inspiration, and connect with a
+          growing community.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-slate-900/50 border border-white/5 backdrop-blur-xl hover:border-pink-500/30 transition-all duration-300 p-8 rounded-2xl space-y-6 relative hover:-translate-y-1">
-          <p className="text-slate-300 italic text-md leading-relaxed">
-            "Creating events with Ticketo has completely transformed how our organization connects with tech enthusiasts. Setting up ticket pricing and tracking seat availability takes seconds, and Stripe handles the checkout seamlessly."
+
+        {/* Testimonial 1 */}
+        <div className="bg-slate-900/50 border border-white/5 backdrop-blur-xl hover:border-pink-500/30 transition-all duration-300 p-8 rounded-2xl space-y-6 hover:-translate-y-1">
+          <p className="text-slate-300 italic leading-relaxed">
+            "RecipeHub completely changed the way I share my home-cooked meals.
+            I can upload recipes, get feedback, and connect with thousands of
+            food lovers. It feels like a real cooking community!"
           </p>
+
           <div className="flex items-center gap-4">
             <Image
-              width={48}
-              height={48}
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" 
-              className="rounded-full h-12 w-12 object-cover shrink-0" 
-              alt="user image" 
+              src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg"
+              alt="Food Blogger"
+              width={56}
+              height={56}
+              className="rounded-full w-14 h-14 object-cover"
             />
+
             <div>
-              <h4 className="text-white font-bold text-sm">Sarah Jenkins</h4>
-              <p className="text-pink-500 text-xs font-semibold">Director, TechVibe Events</p>
+              <h4 className="text-white font-bold">Emily Carter</h4>
+              <p className="text-pink-500 text-sm">Home Food Blogger</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/50 border border-white/5 backdrop-blur-xl hover:border-pink-500/30 transition-all duration-300 p-8 rounded-2xl space-y-6 relative hover:-translate-y-1">
-          <p className="text-slate-300 italic text-md leading-relaxed">
-            "As an attendee, I appreciate the modern, clean interface. Searching and filtering by category or location works instantly, and my dashboard keeps all my ticket barcodes and payment history perfectly organized."
+        {/* Testimonial 2 */}
+        <div className="bg-slate-900/50 border border-white/5 backdrop-blur-xl hover:border-pink-500/30 transition-all duration-300 p-8 rounded-2xl space-y-6 hover:-translate-y-1">
+          <p className="text-slate-300 italic leading-relaxed">
+            "As a premium member, I love the unlimited recipe uploads and
+            exclusive cooking ideas. The UI is clean, fast, and perfect for
+            discovering new dishes every day."
           </p>
+
           <div className="flex items-center gap-4">
-            <Image 
-              width={48} 
-              height={48} 
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" 
-              className="rounded-full w-12 h-12 object-cover shrink-0" 
-              alt="user image" 
+            <Image
+              src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
+              alt="Chef Profile"
+              width={56}
+              height={56}
+              className="rounded-full w-14 h-14 object-cover"
             />
+
             <div>
-              <h4 className="text-white font-bold text-sm">Marcus Brody</h4>
-              <p className="text-pink-500 text-xs font-semibold">Fervent Event Attendee</p>
+              <h4 className="text-white font-bold">Michael Johnson</h4>
+              <p className="text-pink-500 text-sm">Premium Member</p>
             </div>
           </div>
+        </div>
+
+      </div>
+
+      {/* Bottom Highlight */}
+      <div className="mt-12 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-6 py-3">
+          <span className="text-pink-400 font-semibold">
+            Loved by thousands of home chefs worldwide 🍽️
+          </span>
         </div>
       </div>
     </section>
