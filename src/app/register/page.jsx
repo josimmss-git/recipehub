@@ -6,8 +6,21 @@ import { Card, CardHeader, CardContent as CardBody, Input, Button, Label, Form, 
 import { FaUser, FaEnvelope, FaLock, FaImage, FaGoogle } from "react-icons/fa";
 import Logo from "@/components/Logo";
 import { div } from "framer-motion/client";
+import { useForm } from "react-hook-form";
+import { authClient } from "@/lib/auth-client";
 
 export default function RegisterPage() {
+
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    console.log(errors);
+
+    const onSubmit =async (data) => {
+        const { data: signUpData, errors: signUPError } = await authClient.signUp.email({...data})
+        
+        console.log(data, errors);
+    }
+
+
     return (
       <div>
 
@@ -22,9 +35,9 @@ export default function RegisterPage() {
                 </p>
             </CardHeader>
             <CardBody className="gap-4">
-                <Form className="space-y-4 w-full">
+                <Form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input
+                    <Input {...register("name", { required: "name is required", })}
                         id="name"
                         placeholder="John Doe"
                         labelPlacement="outside"
@@ -32,7 +45,7 @@ export default function RegisterPage() {
                         className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
                     />
                     <Label htmlFor="email">Email Address</Label>
-                    <Input
+                    <Input {...register("email", { required: "Email is required", })}
                         id="email"
                         placeholder="john@example.com"
                         type="email"
@@ -41,7 +54,7 @@ export default function RegisterPage() {
                         className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
                     />
                     <Label htmlFor="image">Profile Image URL</Label>
-                    <Input
+                    <Input {...register("image", { required: "image is required", })}
                         id="image"
                         placeholder="https://example.com/avatar.jpg"
                         labelPlacement="outside"
@@ -50,7 +63,7 @@ export default function RegisterPage() {
                     />
 
                     <Label htmlFor="password">Password</Label>
-                    <Input
+                    <Input {...register("password", { required: "password is required",maxLength:12, minLength:6 })}
                         id="password"
                         placeholder="••••••••"
                         type="password"
@@ -60,24 +73,22 @@ export default function RegisterPage() {
                     />
 
                     <div className="flex flex-col gap-2 w-full">
-                        <Label htmlFor="role" className="text-sm font-semibold text-slate-300">Select Role</Label>
-                        <Select
-                            id="role"
-                            aria-label="Select Role"
-                            placeholder="Select Role"
-                            className="w-full"
+                            <Label htmlFor="role" className="text-sm font-semibold text-slate-300">Select Role</Label>
+                            
+                            <select 
+                                
+                                id="role"
+                                 {...register("role", { required: "Role is required", })}
+                            
+                            className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
                         >
-                            <SelectTrigger className="w-full flex items-center justify-between bg-slate-900/50 border border-white/10 rounded-xl px-3 h-11 text-white text-sm">
-                                <SelectValue />
-                                <SelectIndicator />
-                            </SelectTrigger>
-                            <SelectPopover className="bg-slate-950 border border-white/10 rounded-xl shadow-2xl p-1 min-w-[200px]">
-                                <ListBox className="outline-none">
-                                    <ListBoxItem key="attendee" id="attendee" textValue="Attendee" className="p-2 text-white hover:bg-pink-500/20 rounded-lg cursor-pointer">Attendee (Browse & Book Tickets)</ListBoxItem>
-                                    <ListBoxItem key="organizer" id="organizer" textValue="Organizer" className="p-2 text-white hover:bg-pink-500/20 rounded-lg cursor-pointer">Organizer (Create & Host Events)</ListBoxItem>
-                                </ListBox>
-                            </SelectPopover>
-                        </Select>
+                                <option value='normal user'>
+                                    Normal User
+                           </option>
+                                <option value='premium user'>
+                                    premium User
+                           </option>
+                        </select>
                     </div>
 
                     <Button
