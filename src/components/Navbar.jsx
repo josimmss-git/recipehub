@@ -2,16 +2,35 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FaTicketAlt, FaUser, FaSignOutAlt, FaThLarge } from "react-icons/fa";
+import { usePathname, useRouter } from "next/navigation";
+import { FaUser, FaSignOutAlt, FaThLarge } from "react-icons/fa";
+import Image from "next/image";
 import Logo from "./Logo";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { authClient, useSession } from "@/lib/auth-client";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef(null);
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isLoggedIn = !!session?.user;
+  const user = session?.user;
+  console.log(user,"this is users")
+
+  // role এর স্পেস বাদ দিয়ে hyphen দিয়ে slug বানানো
+  // যেমন: "normal user" -> "normal-user", "premium user" -> "premium-user"
+  const roleSlug = user?.role ? user.role.trim().toLowerCase().replace(/\s+/g, "-") : "normal-user";
+
+  // নামের প্রথম অক্ষর দিয়ে initial বানানো (profile image না থাকলে এটা দেখাবে)
+  const userInitial = user?.name ? user.name.trim().charAt(0).toUpperCase() : "?";
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -23,19 +42,10 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await authClient.signOut();
     setDropdownOpen(false);
-    alert("Logged Out! (Design Only)");
-  };
-
-
-
-  const mockUser = {
-    name: "Jane Doe",
-    email: "jane@example.com",
-    role: "attendee",
-    image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+    router.push("/");
   };
 
   return (
@@ -48,21 +58,26 @@ export default function Navbar() {
         <div className="hidden sm:flex items-center gap-8">
           <Link
             href="/"
-            className={`text-sm font-medium transition-colors ${pathname === "/" ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"}`}
+            className={`text-sm font-medium transition-colors ${
+              pathname === "/" ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"
+            }`}
           >
             Home
           </Link>
           <Link
-            href="/events"
-            className={`text-sm font-medium transition-colors ${pathname.startsWith("/events") ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"}`}
+            href="/browse-recipe"
+            className={`text-sm font-medium transition-colors ${
+              pathname.startsWith("/browse-recipe") ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"
+            }`}
           >
             Browse Recipes
-
           </Link>
           {isLoggedIn && (
             <Link
-              href={"/"}
-              className={`text-sm font-medium transition-colors ${pathname.startsWith("/dashboard") ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"}`}
+              href={`/dashboard/${roleSlug}`}
+              className={`text-sm font-medium transition-colors ${
+                pathname.startsWith("/dashboard") ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"
+              }`}
             >
               Dashboard
             </Link>
@@ -71,16 +86,17 @@ export default function Navbar() {
 
         {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-4">
-
-
-          {!isLoggedIn && (
+          {/* mounted না হওয়া পর্যন্ত (অর্থাৎ client-side hydrate না হওয়া পর্যন্ত)
+              কিছু রেন্ডার না করা — এতে সার্ভার ও ক্লায়েন্ট HTML মিলে যায়,
+              hydration mismatch এরর আসবে না */}
+          {!mounted || isPending ? null : !isLoggedIn ? (
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => setIsLoggedIn(true)}
+              <Link
+                href="/login"
                 className="inline-flex items-center justify-center font-semibold text-xs text-slate-300 hover:text-white h-9 px-4 rounded-xl hover:bg-white/5 transition"
               >
                 Login
-              </button>
+              </Link>
               <Link
                 href="/register"
                 className="inline-flex items-center justify-center font-semibold text-xs bg-gradient-to-r from-pink-500 to-indigo-600 text-white shadow-lg shadow-pink-500/10 hover:shadow-pink-500/20 transition h-9 px-4 rounded-xl"
@@ -88,19 +104,25 @@ export default function Navbar() {
                 Sign Up
               </Link>
             </div>
-          )}
-
-          {isLoggedIn && (
+          ) : (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center transition-transform hover:scale-105 outline-none focus:outline-none cursor-pointer"
               >
-                <img
-                  className="w-9 h-9 rounded-full object-cover border border-pink-500 shadow-md shadow-pink-500/10"
-                  src={mockUser.image}
-                  alt="avatar"
-                />
+                {user?.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name || "User"}
+                    width={36}
+                    height={36}
+                    className="w-9 h-9 rounded-full object-cover border border-white/10"
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-r from-pink-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold border border-white/10">
+                    {userInitial}
+                  </div>
+                )}
               </button>
 
               {dropdownOpen && (
@@ -108,15 +130,15 @@ export default function Navbar() {
                   {/* User info */}
                   <div className="px-4 py-2.5 border-b border-white/5 mb-1.5 cursor-default">
                     <p className="text-[10px] text-pink-400 font-bold uppercase tracking-wider">
-                      {mockUser.role} Account
+                      {user?.role || "Normal"} Account
                     </p>
-                    <p className="font-bold text-white text-sm mt-0.5">{mockUser.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate mt-0.5">{mockUser.email}</p>
+                    <p className="font-bold text-white text-sm mt-0.5">{user?.name}</p>
+                    <p className="text-[11px] text-slate-400 truncate mt-0.5">{user?.email}</p>
                   </div>
 
                   {/* Actions */}
                   <Link
-                    href="/dashboard/organizer"
+                    href={`/dashboard/${roleSlug}`}
                     onClick={() => setDropdownOpen(false)}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
                   >
@@ -125,7 +147,7 @@ export default function Navbar() {
                   </Link>
 
                   <Link
-                    href={`/dashboard/${mockUser.role}`}
+                    href={`/dashboard/${roleSlug}/profile`}
                     onClick={() => setDropdownOpen(false)}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
                   >
