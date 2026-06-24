@@ -307,8 +307,8 @@ export default function RegisterPage() {
                 {...register("role", { required: "Role is required" })}
                 className="w-full rounded-lg bg-slate-900/50 border border-white/10 hover:border-pink-500/50 focus:!border-pink-500 text-white px-3 h-10 outline-none"
               >
-                <option value="user">User</option>
-                <option value="premium">Premium</option>
+                <option value="normalUser">User</option>
+                <option value="premiumUser">Premium</option>
               </select>
               {errors.role && (
                 <p className="text-red-400 text-xs">{errors.role.message}</p>
