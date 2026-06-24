@@ -17,13 +17,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full antialiased dark">
       <body className="min-h-full flex flex-col bg-[#080c16] text-[#f3f4f6]">
-        <Navbar />
+       
         <main className="flex-grow flex flex-col">{children}
           <Toaster
             position="top-right"
           reverseOrder={false}/>
         </main>
-        <Footer />
+        
       </body>
     </html>
   );

@@ -1,167 +1,115 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import {
-  FaUserCircle,
-  FaTicketAlt,
-  FaHistory,
-  FaBuilding,
-  FaCalendarAlt,
-  FaPlus,
-  FaUsers,
-  FaUserShield,
-  FaSignOutAlt,
-  FaHome,
-  FaBars
-} from "react-icons/fa";
-import { Button, Drawer } from "@heroui/react";
 import Logo from "./Logo";
 import Image from "next/image";
+import Link from "next/link";
+import { FaHome, FaSignOutAlt } from "react-icons/fa";
 
-// Menu items for each role
-const MENU_BY_ROLE = {
-  attendee: [
-    { key: "overview", label: "Overview", icon: FaUserCircle },
-    { key: "tickets", label: "My Tickets", icon: FaTicketAlt },
-    { key: "payments", label: "Payments", icon: FaHistory },
-  ],
-  organizer: [
-    { key: "overview", label: "Overview", icon: FaUsers },
-    { key: "organization", label: "Organization", icon: FaBuilding },
-    { key: "add-event", label: "Add Event", icon: FaPlus },
-    { key: "manage-events", label: "Manage Events", icon: FaCalendarAlt },
-    { key: "attendees", label: "Attendees", icon: FaUsers },
-  ],
-  admin: [
-    { key: "users", label: "Users", icon: FaUserShield },
-    { key: "events", label: "Approve Events", icon: FaCalendarAlt },
-    { key: "transactions", label: "Transaction Logs", icon: FaHistory },
-  ],
-};
+const DashboardSidebar = ({
+  session,
+  role,
+  menuItems,
+  pathname,
+  handleLogout,
+}) => {
+  return (
+    <aside className="w-64 min-h-screen border-r border-white/10">
+      <div className="h-full flex flex-col bg-slate-950">
+        {/* Logo */}
+        <div className="px-6 py-5 border-b border-white/10">
+          <Logo />
+        </div>
 
-export default function DashboardSidebar({ role = "organizer" }) {
-  const pathname = usePathname();
+        {/* User */}
+        <div className="px-6 py-5 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-indigo-500">
+              <Image
+                src={
+                  session?.user?.image ||
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    session?.user?.name || "User"
+                  )}`
+                }
+                alt="User"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-  const handleLogout = () => {
-    alert("Sign Out Clicked! (Design Only)");
-  };
+            <div className="overflow-hidden">
+              <h3 className="text-sm font-semibold truncate">
+                {session?.user?.name}
+              </h3>
 
-  const menuItems = MENU_BY_ROLE[role] || MENU_BY_ROLE.attendee;
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-slate-400 uppercase">
+                  {role}
+                </p>
 
-  const getPath = (tabKey) => {
-    if (role === "admin") {
-      return `/dashboard/admin/${tabKey}`;
-    }
-    if (tabKey === "overview") {
-      return `/dashboard/${role}`;
-    }
-    return `/dashboard/${role}/${tabKey}`;
-  };
-
-  const SidebarContent = () => (
-    <div className="h-full flex flex-col bg-slate-950/80 backdrop-blur-xl">
-      {/* Brand / Logo */}
-      <div className="px-6 py-5 border-b border-white/5">
-        <Logo />
-      </div>
-
-      {/* User Profile */}
-      <div className="px-6 py-5 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-500/60 shrink-0">
-            <Image
-              width={40}
-              height={40}
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent("Jane Doe")}&background=7c3aed&color=fff&bold=true`}
-              alt="Avatar"
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <div className="overflow-hidden">
-            <p className="text-white text-sm font-bold truncate leading-tight">
-              Jane Doe
-            </p>
-            <span className={`text-[10px] font-bold uppercase tracking-wider ${role === "admin" ? "text-yellow-400" : role === "organizer" ? "text-indigo-400" : "text-pink-400"}`}>
-              {role}
-            </span>
+                {session?.user?.isPremium && (
+                  <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-900">
+                    Premium
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Navigation Menu */}
-      <nav className="flex-grow overflow-y-auto px-3 py-4 space-y-1">
-        <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest px-3 pb-2">Navigation</p>
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          <p className="text-xs uppercase text-slate-500 px-3 mb-2">
+            Navigation
+          </p>
 
-        {menuItems.map(({ key, label, icon: Icon }) => {
-          const targetPath = getPath(key);
-          const isActive = pathname === targetPath || (role === "admin" && pathname === "/dashboard/admin" && key === "users");
-          return (
-            <Link
-              key={key}
-              href={targetPath}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 text-left cursor-pointer ${isActive
-                ? "bg-gradient-to-r from-pink-500/20 to-indigo-600/20 text-white border border-pink-500/20 shadow-sm"
-                : "text-slate-400 hover:text-white hover:bg-white/5"
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/dashboard" &&
+                pathname.startsWith(`${item.href}/`));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
+                  isActive
+                    ? "bg-indigo-600 text-white"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`}
-            >
-              <span className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${isActive ? "bg-gradient-to-br from-pink-500 to-indigo-600 text-white shadow-md shadow-pink-500/20" : "bg-white/5 text-slate-400"}`}>
-                <Icon size={14} />
-              </span>
-              <span>{label}</span>
-              {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-pink-400" />}
-            </Link>
-          );
-        })}
-      </nav>
+              >
+                <Icon size={16} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-      {/* Bottom Links */}
-      <div className="px-3 py-4 border-t border-white/5 space-y-1">
-        <Link href="/" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-150">
-          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
-            <FaHome size={13} />
-          </span>
-          Back to Site
-        </Link>
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/5 transition-all duration-150 cursor-pointer"
-        >
-          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
-            <FaSignOutAlt size={13} />
-          </span>
-          Sign Out
-        </button>
+        {/* Footer */}
+        <div className="p-3 border-t border-white/10 space-y-2">
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800"
+          >
+            <FaHome size={15} />
+            Back to Site
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+          >
+            <FaSignOutAlt size={15} />
+            Logout
+          </button>
+        </div>
       </div>
-    </div>
+    </aside>
   );
+};
 
-  return (
-    <>
-      {/* Desktop Sidebar (Persistent aside panel) */}
-      <aside className="hidden lg:block w-64 shrink-0 h-screen sticky top-0 border-r border-white/5">
-        <SidebarContent />
-      </aside>
-
-      {/* Mobile Top Header + Toggleable HeroUI Drawer */}
-      <div className="lg:hidden w-full flex items-center justify-between px-6 py-4 bg-slate-950/80 border-b border-white/5 backdrop-blur-xl sticky top-0 z-50">
-        <Logo />
-
-        <Drawer>
-          <Button variant="bordered" className="border-white/10 hover:border-white/20 text-white font-semibold flex items-center gap-2 min-w-0 px-3 py-1.5 h-10" radius="lg">
-            <FaBars />
-            Menu
-          </Button>
-          <Drawer.Backdrop>
-            <Drawer.Content placement="left" className="bg-slate-950/95 border-r border-white/5 backdrop-blur-xl p-0 w-64 max-w-xs">
-              <Drawer.Dialog className="bg-transparent h-full flex flex-col p-0 border-none shadow-none">
-                <Drawer.CloseTrigger className="text-white hover:text-red-400 absolute right-4 top-5 z-50 cursor-pointer" />
-                <SidebarContent />
-              </Drawer.Dialog>
-            </Drawer.Content>
-          </Drawer.Backdrop>
-        </Drawer>
-      </div>
-    </>
-  );
-}
+export default DashboardSidebar;
