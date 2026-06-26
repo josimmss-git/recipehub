@@ -8,6 +8,7 @@ import {
   FaCrown,
 } from "react-icons/fa";
 import { Button } from "@heroui/react";
+import DashBoardHeading from "@/components/DashBoardHeading";
 
 const OverviewItems = () => {
   const stats = {
@@ -22,6 +23,7 @@ const OverviewItems = () => {
   return (
     <div className="space-y-6 mt-6">
       {/* Stats */}
+      <DashBoardHeading title="Overview" description="Dashboard Overview" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 flex items-center justify-between">
           <div>
