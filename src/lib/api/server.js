@@ -5,16 +5,18 @@ export const serverMutation = async (
   method = "POST",
   data = {}
 ) => {
-  const res = await fetch(`${baseURL}/${path}`, {
+  const res = await fetch(`${baseURL}${path}`, {
     method,
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+    cache: "no-store",
   });
 
   if (!res.ok) {
-    throw new Error("Failed to make request");
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || "Failed to make request");
   }
 
   return res.json();

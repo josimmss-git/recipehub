@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Card, CardHeader, Input, TextArea, Form, Label } from "@heroui/react";
 import { FaImage } from "react-icons/fa";
+import { addRecipe } from "@/lib/api/action";
+import toast from "react-hot-toast";
 
 const AddRecipeForm = () => {
   const [imagePreview, setImagePreview] = useState("");
@@ -79,12 +81,22 @@ const AddRecipeForm = () => {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log("Recipe Submitted:", data);
-    alert("Recipe submitted successfully! 🎉 Check console for data.");
+
+const onSubmit = async (data) => {
+  try {
+    const result = await addRecipe(data);
+
+    console.log(result);
+
+    toast.success("Recipe added successfully!");
+
     reset();
     setImagePreview("");
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error(error.message || "Failed to add recipe");
+  }
+};
 
   return (
     <div className="mt-6 space-y-6 max-w-3xl mx-auto p-4">
