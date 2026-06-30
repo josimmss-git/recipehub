@@ -8,7 +8,7 @@ import {
   FaHeart,
 } from "react-icons/fa";
 
-import { baseURL } from "@/lib/api/baseUrl";
+import { baseURL } from "@/baseUrl";
 
 const fetchRecipe = async (id) => {
   const res = await fetch(`${baseURL}/api/recipes/${id}`, {

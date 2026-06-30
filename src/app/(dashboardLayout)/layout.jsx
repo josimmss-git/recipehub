@@ -30,52 +30,100 @@ export default function DashboardLayout({ children }) {
   const isPremium = session?.user?.isPremium || false;
 
   /* =========================
-     USER MENU (DEFAULT)
+     USER MENU
   ========================= */
   const user = [
     { label: "Overview", href: "/dashboard", icon: FaHome },
-    { label: "My Recipes", href: "/dashboard/my-recipes", icon: FaBookOpen },
-    { label: "Add Recipe", href: "/dashboard/add-recipe", icon: FaPlus },
-    { label: "My Favorites", href: "/dashboard/my-favorites", icon: FaHeart },
+
+    {
+      label: "My Recipes",
+      href: "/dashboard/my-recipes",
+      icon: FaBookOpen,
+    },
+
+    {
+      label: "Add Recipe",
+      href: "/dashboard/add-recipe",
+      icon: FaPlus,
+    },
+
+    {
+      label: "Favorite Recipes",
+      href: "/dashboard/favorites",
+      icon: FaHeart,
+    },
+
     {
       label: "Purchased Recipes",
-      href: "/dashboard/my-purchased",
+      href: "/dashboard/purchased",
       icon: FaShoppingBag,
     },
-    { label: "Profile", href: "/dashboard/profile", icon: FaUserCircle },
+
+    {
+      label: "Profile",
+      href: "/dashboard/profile",
+      icon: FaUserCircle,
+    },
   ];
 
   /* =========================
-     PREMIUM MENU (EXTRA)
+     PREMIUM MENU
   ========================= */
   const premium = [
-    { label: "Premium Dashboard", href: "/dashboard/premium", icon: FaCrown },
-    { label: "Analytics", href: "/dashboard/analytics", icon: FaChartBar },
-    { label: "Exclusive Recipes", href: "/dashboard/exclusive", icon: FaStar },
+    {
+      label: "Premium Dashboard",
+      href: "/dashboard/premium",
+      icon: FaCrown,
+    },
+    {
+      label: "Analytics",
+      href: "/dashboard/analytics",
+      icon: FaChartBar,
+    },
+    {
+      label: "Exclusive Recipes",
+      href: "/dashboard/exclusive",
+      icon: FaStar,
+    },
   ];
 
   /* =========================
      ADMIN MENU
   ========================= */
   const admin = [
-    { label: "Overview", href: "/dashboard", icon: FaHome },
-    { label: "Manage Users", href: "/dashboard/manage-users", icon: FaUsers },
+    {
+      label: "Overview",
+      href: "/admin",
+      icon: FaHome,
+    },
+
+    {
+      label: "Manage Users",
+      href: "/admin/users",
+      icon: FaUsers,
+    },
+
     {
       label: "Manage Recipes",
-      href: "/dashboard/manage-recipes",
+      href: "/admin/recipes",
       icon: FaBookOpen,
     },
-    { label: "Reports", href: "/dashboard/reports", icon: FaFlag },
+
     {
-      label: "Transactions",
-      href: "/dashboard/transactions",
-      icon: FaReceipt,
+      label: "Premium Members",
+      href: "/admin/premium",
+      icon: FaCrown,
     },
-    { label: "Profile", href: "/dashboard/profile", icon: FaUserCircle },
+
+    {
+      label: "Profile",
+      href: "/dashboard/profile",
+      icon: FaUserCircle,
+    },
   ];
 
   /* =========================
-     ROLE BASED MENU SELECT
+     ROLE BASED MENU
   ========================= */
   let menuItems = [];
 
@@ -110,7 +158,6 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="min-h-screen flex bg-slate-950 text-white">
-      {/* Sidebar */}
       <DashboardSidebar
         session={session}
         role={role}
@@ -119,7 +166,6 @@ export default function DashboardLayout({ children }) {
         handleLogout={handleLogout}
       />
 
-      {/* Content */}
       <main className="flex-1 overflow-y-auto">
         <div className="p-6">{children}</div>
       </main>

@@ -23,7 +23,7 @@ export default function Navbar() {
 
   const isLoggedIn = !!session?.user;
   const user = session?.user;
-  console.log(user,"this is users")
+  // console.log(user,"this is users")
 
   // role এর স্পেস বাদ দিয়ে hyphen দিয়ে slug বানানো
   // যেমন: "normal user" -> "normal-user", "premium user" -> "premium-user"

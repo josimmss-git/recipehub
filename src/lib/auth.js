@@ -2,32 +2,52 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(process.env.MONGODB_URI );
+const client = new MongoClient(process.env.MONGODB_URI);
+
+await client.connect();
+
 const db = client.db(process.env.DB_NAME);
 
 export const auth = betterAuth({
   database: mongodbAdapter(db, {
     client,
   }),
+
   emailAndPassword: {
-    enabled: true
+    enabled: true,
   },
+
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "placeholder-google-client-id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder-google-client-secret"
-    }
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
   },
+
   user: {
-  additionalFields: {
-    role: {
-      type: "string",
-      defaultValue: "normal user",
-    },
-    isBlocked: {
-      type: "boolean",
-      defaultValue: false,
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "user", // user | admin
+      },
+
+      isPremium: {
+        type: "boolean",
+        defaultValue: false,
+      },
+
+      isBlocked: {
+        type: "boolean",
+        defaultValue: false,
+      },
     },
   },
-},
+
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5, // 5 minutes
+    },
+  },
 });
+
