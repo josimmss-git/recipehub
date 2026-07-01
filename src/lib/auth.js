@@ -9,6 +9,9 @@ await client.connect();
 const db = client.db(process.env.DB_NAME);
 
 export const auth = betterAuth({
+   baseURL: process.env.BETTER_AUTH_URL || "https://recipehub-server-dusky.vercel.app",
+  trustedOrigins: [process.env.CLIENT_URL || "http://localhost:3000"],
+
   database: mongodbAdapter(db, {
     client,
   }),
@@ -50,4 +53,3 @@ export const auth = betterAuth({
     },
   },
 });
-

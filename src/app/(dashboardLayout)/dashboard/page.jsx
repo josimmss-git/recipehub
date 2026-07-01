@@ -1,47 +1,91 @@
-export default function DashboardPage() {
+import dbConnect from "@/lib/dbConnect";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+export default async function DashboardPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  const db = await dbConnect();
+
+  const recipesCollection = db.collection("recipes");
+  const usersCollection = db.collection("users");
+
+  const userEmail = session?.user?.email;
+
+  const myRecipes = await recipesCollection.countDocuments({
+    userEmail,
+  });
+
+  const myFavorites = await usersCollection.countDocuments({
+    favorites: {
+      $in: [userEmail],
+    },
+  });
+
+  const totalLikes = await recipesCollection.aggregate([
+    {
+      $match: {
+        userEmail,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$likeCount",
+        },
+      },
+    },
+  ]).toArray();
+
+  const likes = totalLikes[0]?.total || 0;
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold">
+          Dashboard
+        </h1>
+
         <p className="text-default-500 mt-2">
-          Welcome to your RecipeHub Dashboard.
+          Welcome back, {session?.user?.name}
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border p-6 shadow-sm">
-          <h3 className="text-default-500">Total Recipes</h3>
-          <p className="mt-3 text-3xl font-bold">0</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <div className="rounded-xl border p-6 shadow-sm">
-          <h3 className="text-default-500">Favorites</h3>
-          <p className="mt-3 text-3xl font-bold">0</p>
-        </div>
+        <div className="border rounded-xl p-6">
+          <h2 className="text-lg font-semibold">
+            My Recipes
+          </h2>
 
-        <div className="rounded-xl border p-6 shadow-sm">
-          <h3 className="text-default-500">Total Likes</h3>
-          <p className="mt-3 text-3xl font-bold">0</p>
-        </div>
-
-        <div className="rounded-xl border p-6 shadow-sm">
-          <h3 className="text-default-500">Premium</h3>
-          <p className="mt-3 text-2xl font-bold text-warning">
-            Free User
+          <p className="text-4xl font-bold mt-4">
+            {myRecipes}
           </p>
         </div>
-      </div>
 
-      {/* Recent Recipes */}
-      <div className="rounded-xl border p-6 shadow-sm">
-        <h2 className="mb-4 text-2xl font-semibold">
-          Recent Recipes
-        </h2>
+        <div className="border rounded-xl p-6">
+          <h2 className="text-lg font-semibold">
+            Favorites
+          </h2>
 
-        <p className="text-default-500">
-          No recipes added yet.
-        </p>
+          <p className="text-4xl font-bold mt-4">
+            {myFavorites}
+          </p>
+        </div>
+
+        <div className="border rounded-xl p-6">
+          <h2 className="text-lg font-semibold">
+            Total Likes
+          </h2>
+
+          <p className="text-4xl font-bold mt-4">
+            {likes}
+          </p>
+        </div>
+
       </div>
     </div>
   );

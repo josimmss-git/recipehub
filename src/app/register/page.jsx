@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Card,
-  CardHeader,
-  CardContent as CardBody,
   Input,
   Button,
   Label,
+  TextField,
+  InputGroup,
   Form,
 } from "@heroui/react";
 import { FaUser, FaEnvelope, FaLock, FaImage, FaGoogle } from "react-icons/fa";
@@ -47,13 +47,10 @@ export default function RegisterPage() {
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await fetch(
-      `https://api.imgbb.com/1/upload?key=${apiKey}`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+      method: "POST",
+      body: formData,
+    });
 
     const data = await res.json();
 
@@ -94,7 +91,9 @@ export default function RegisterPage() {
       setValue("image", uploadedUrl, { shouldValidate: true });
     } catch (err) {
       console.log("ImgBB upload error:", err);
-      setImageUploadError(err.message || "Failed to upload image. Please try again.");
+      setImageUploadError(
+        err.message || "Failed to upload image. Please try again."
+      );
       setImagePreview("");
       setValue("image", "", { shouldValidate: true });
     } finally {
@@ -113,7 +112,9 @@ export default function RegisterPage() {
       if (error) {
         // Better Auth এ error.message থাকে — এটা ইউজারকে দেখান
         console.log("Sign up error:", error);
-        setServerError(error.message || "Something went wrong. Please try again.");
+        setServerError(
+          error.message || "Something went wrong. Please try again."
+        );
         return;
       }
 
@@ -132,7 +133,7 @@ export default function RegisterPage() {
   return (
     <div>
       <Card className="w-full max-w-lg border border-white/5 bg-slate-950/70 backdrop-blur-xl shadow-2xl p-4 mx-auto">
-        <CardHeader className="flex flex-col gap-1 items-center pb-6 text-center">
+        <Card.Header className="flex flex-col gap-1 items-center pb-6 text-center">
           <Logo />
           <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-pink-500 bg-clip-text text-transparent">
             Create an Account
@@ -141,9 +142,9 @@ export default function RegisterPage() {
             Join RecipeHub to discover delicious recipes, share your cooking
             creations, and connect with food lovers around the world.
           </p>
-        </CardHeader>
+        </Card.Header>
 
-        <CardBody className="gap-4">
+        <Card.Content className="gap-4">
           {/* Server / API error message */}
           {serverError && (
             <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg p-3">
@@ -153,61 +154,68 @@ export default function RegisterPage() {
 
           <Form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
             {/* Full Name */}
-            <div className="flex flex-col gap-1 w-full">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                {...register("name", {
-                  required: "Name is required",
-                  minLength: {
-                    value: 2,
-                    message: "Name must be at least 2 characters",
-                  },
-                  maxLength: {
-                    value: 50,
-                    message: "Name must be at most 50 characters",
-                  },
-                  pattern: {
-                    value: /^[A-Za-z\s.'-]+$/,
-                    message: "Name can only contain letters, spaces, and . ' -",
-                  },
-                })}
-                id="name"
-                placeholder="John Doe"
-                labelPlacement="outside"
-                startContent={<FaUser className="text-slate-400 text-sm" />}
-                className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
-              />
+            <TextField name="name" className="flex flex-col gap-1 w-full">
+              <Label>Full Name</Label>
+              <InputGroup>
+                <InputGroup.Prefix>
+                  <FaUser className="text-slate-400 text-sm" />
+                </InputGroup.Prefix>
+                <InputGroup.Input
+                  {...register("name", {
+                    required: "Name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Name must be at least 2 characters",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: "Name must be at most 50 characters",
+                    },
+                    pattern: {
+                      value: /^[A-Za-z\s.'-]+$/,
+                      message:
+                        "Name can only contain letters, spaces, and . ' -",
+                    },
+                  })}
+                  id="name"
+                  placeholder="John Doe"
+                  className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
+                />
+              </InputGroup>
               {errors.name && (
                 <p className="text-red-400 text-xs">{errors.name.message}</p>
               )}
-            </div>
+            </TextField>
 
             {/* Email Address */}
-            <div className="flex flex-col gap-1 w-full">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Enter a valid email address",
-                  },
-                  maxLength: {
-                    value: 100,
-                    message: "Email must be at most 100 characters",
-                  },
-                })}
-                id="email"
-                placeholder="john@example.com"
-                type="email"
-                labelPlacement="outside"
-                startContent={<FaEnvelope className="text-slate-400 text-sm" />}
-                className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
-              />
+            <TextField name="email" className="flex flex-col gap-1 w-full">
+              <Label>Email Address</Label>
+              <InputGroup>
+                <InputGroup.Prefix>
+                  <FaEnvelope className="text-slate-400 text-sm" />
+                </InputGroup.Prefix>
+                <InputGroup.Input
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Enter a valid email address",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Email must be at most 100 characters",
+                    },
+                  })}
+                  id="email"
+                  placeholder="john@example.com"
+                  type="email"
+                  className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
+                />
+              </InputGroup>
               {errors.email && (
                 <p className="text-red-400 text-xs">{errors.email.message}</p>
               )}
-            </div>
+            </TextField>
 
             {/* Profile Image Upload (ImgBB) */}
             <div className="flex flex-col gap-1 w-full">
@@ -260,38 +268,41 @@ export default function RegisterPage() {
             </div>
 
             {/* Password */}
-            <div className="flex flex-col gap-1 w-full">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters",
-                  },
-                  maxLength: {
-                    value: 12,
-                    message: "Password must be at most 12 characters",
-                  },
-                  pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*\d).+$/,
-                    message:
-                      "Password must contain at least one letter and one number",
-                  },
-                })}
-                id="password"
-                placeholder="••••••••"
-                type="password"
-                labelPlacement="outside"
-                startContent={<FaLock className="text-slate-400 text-sm" />}
-                className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
-              />
+            <TextField name="password" className="flex flex-col gap-1 w-full">
+              <Label>Password</Label>
+              <InputGroup>
+                <InputGroup.Prefix>
+                  <FaLock className="text-slate-400 text-sm" />
+                </InputGroup.Prefix>
+                <InputGroup.Input
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                    maxLength: {
+                      value: 12,
+                      message: "Password must be at most 12 characters",
+                    },
+                    pattern: {
+                      value: /^(?=.*[A-Za-z])(?=.*\d).+$/,
+                      message:
+                        "Password must contain at least one letter and one number",
+                    },
+                  })}
+                  id="password"
+                  placeholder="••••••••"
+                  type="password"
+                  className="w-full bg-slate-900/50 border-white/10 hover:border-pink-500/50 focus-within:!border-pink-500"
+                />
+              </InputGroup>
               {errors.password && (
                 <p className="text-red-400 text-xs">
                   {errors.password.message}
                 </p>
               )}
-            </div>
+            </TextField>
 
             {/* Role */}
             <div className="flex flex-col gap-2 w-full">
@@ -339,9 +350,8 @@ export default function RegisterPage() {
 
           <Button
             variant="bordered"
-            className="w-full border-white/10 hover:bg-white/5 hover:border-white/20 text-white font-semibold h-11"
+            className="w-full border-white/10 hover:bg-white/5 hover:border-white/20 text-white font-semibold h-11 flex items-center justify-center gap-2"
             radius="lg"
-            startContent={<FaGoogle className="text-pink-500" />}
             onPress={() =>
               authClient.signIn.social({
                 provider: "google",
@@ -349,7 +359,8 @@ export default function RegisterPage() {
               })
             }
           >
-            Google OAuth
+            <FaGoogle className="text-pink-500" />
+          Register with Google
           </Button>
 
           <p className="text-center text-sm text-slate-400 mt-6">
@@ -361,7 +372,7 @@ export default function RegisterPage() {
               Log In
             </Link>
           </p>
-        </CardBody>
+        </Card.Content>
       </Card>
     </div>
   );

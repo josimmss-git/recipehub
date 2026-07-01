@@ -1,1 +1,1 @@
- export const baseURL="https://recipehub-server-dusky.vercel.app"
+ export const baseURL="http://localhost:3000"
