@@ -82,14 +82,19 @@ export default function EditRecipeForm({ recipe }) {
       {errors.image && (
         <p className="text-red-500">{errors.image.message}</p>
       )}
-
-      <input
-        {...register("category", {
-          required: "Category is required",
-        })}
-        placeholder="Category"
-        className="w-full border rounded-lg p-3"
-      />
+<select
+  {...register("category", {
+    required: "Category is required",
+  })}
+  className="w-full border rounded-lg p-3 bg-black"
+>
+  <option value="">Select Category</option>
+  <option value="Breakfast">Breakfast</option>
+  <option value="Lunch">Lunch</option>
+  <option value="Dinner">Dinner</option>
+  <option value="Dessert">Dessert</option>
+  <option value="Snack">Snack</option>
+</select>
       {errors.category && (
         <p className="text-red-500">{errors.category.message}</p>
       )}

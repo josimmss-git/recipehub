@@ -23,7 +23,7 @@ export default function Navbar() {
 
   const isLoggedIn = !!session?.user;
   const user = session?.user;
-  // console.log(user,"this is users")
+ console.log(user,"this is users")
 
   // role এর স্পেস বাদ দিয়ে hyphen দিয়ে slug বানানো
   // যেমন: "normal user" -> "normal-user", "premium user" -> "premium-user"
@@ -74,7 +74,7 @@ export default function Navbar() {
           </Link>
           {isLoggedIn && (
             <Link
-              href="/dashboard"
+              href={`/dashboard/${roleSlug}`}
               className={`text-sm font-medium transition-colors ${
                 pathname.startsWith("/dashboard") ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"
               }`}
@@ -147,7 +147,7 @@ export default function Navbar() {
                   </Link>
 
                   <Link
-                    href="/dashboard"
+                    href={`/dashboard/${roleSlug}/profile`}
                     onClick={() => setDropdownOpen(false)}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
                   >

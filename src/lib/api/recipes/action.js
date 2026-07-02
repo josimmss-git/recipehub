@@ -82,3 +82,15 @@ export async function getMyRecipes() {
 
   return JSON.parse(JSON.stringify(recipes));
 }
+
+export async function getAllRecipes() {
+  const db = await dbConnect();
+
+  const recipes = await db
+    .collection("recipes")
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  return recipes;
+}

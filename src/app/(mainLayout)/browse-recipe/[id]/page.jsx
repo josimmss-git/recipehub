@@ -1,183 +1,96 @@
-import Link from "next/link";
+import dbConnect from "@/lib/dbConnect";
+import { ObjectId } from "mongodb";
+import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Card, Button } from "@heroui/react";
-import {
-  FaArrowLeft,
-  FaClock,
-  FaUsers,
-  FaHeart,
-} from "react-icons/fa";
-
-import { baseURL } from "@/baseUrl";
-
-const fetchRecipe = async (id) => {
-  const res = await fetch(`${baseURL}/api/recipes/${id}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch recipe");
-  }
-
-  return res.json();
-};
+import LikeButton from "@/components/recipes/LikeButton";
 
 export default async function RecipeDetailsPage({ params }) {
   const { id } = await params;
-  const recipe = await fetchRecipe(id);
+
+  const db = await dbConnect();
+
+  const recipe = await db.collection("recipes").findOne({
+    _id: new ObjectId(id),
+  });
+
+  if (!recipe) {
+    notFound();
+  }
 
   return (
-    <div className="min-h-screen py-16 px-6 max-w-6xl mx-auto w-full space-y-12">
-      {/* Back Button */}
-      <Link href="/browse-recipe">
-        <Button
-          variant="light"
-          className="text-slate-400 hover:text-white"
-          startContent={<FaArrowLeft />}
-        >
-          Back to Recipes
-        </Button>
-      </Link>
+    <div className="max-w-5xl mx-auto px-4 py-10">
+      <div className="grid md:grid-cols-2 gap-10">
 
-      {/* Recipe Banner */}
-      <div className="relative h-[300px] md:h-[450px] w-full rounded-3xl overflow-hidden shadow-2xl border border-white/5">
-        <Image
-          src={recipe?.image || "/placeholder-food.jpg"}
-          alt={recipe?.title || "Recipe"}
-          fill
-          className="object-cover"
-          priority
-        />
+        <div>
+          <Image
+            src={recipe.image}
+            alt={recipe.title}
+            width={600}
+            height={500}
+            className="rounded-xl w-full object-cover"
+          />
+        </div>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10" />
+        <div className="space-y-4">
 
-        <span className="absolute top-6 left-6 bg-pink-500 text-white font-extrabold text-xs uppercase tracking-wider px-4 py-2 rounded-full border border-pink-400/20 shadow-lg z-20">
-          {recipe?.category}
-        </span>
-      </div>
+          <h1 className="text-4xl font-bold">
+            {recipe.title}
+          </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Left Section */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Title */}
-          <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-              {recipe?.title}
-            </h1>
+          <div className="flex gap-2 flex-wrap">
+            <span className="badge badge-primary">
+              {recipe.category}
+            </span>
 
-            <div className="flex flex-wrap gap-6 text-sm text-slate-300">
-              <div className="flex items-center gap-2">
-                <FaClock className="text-pink-500" />
-                <span>{recipe?.cookingTime} Minutes</span>
-              </div>
+            <span className="badge badge-secondary">
+              {recipe.cuisine}
+            </span>
 
-              <div className="flex items-center gap-2">
-                <FaUsers className="text-pink-500" />
-                <span>{recipe?.servings} Servings</span>
-              </div>
+            <span className="badge badge-accent">
+              {recipe.difficulty}
+            </span>
+          </div>
 
-              <div className="flex items-center gap-2">
-                <FaHeart className="text-pink-500" />
-                <span>{recipe?.likesCount || 0} Likes</span>
-              </div>
+          <p>
+            <strong>Preparation Time:</strong>{" "}
+            {recipe.preparationTime} Minutes
+          </p>
+
+          <p>
+            <strong>Likes:</strong> ❤️ {recipe.likeCount || 0}
+          </p>
+
+          <p>
+            <strong>Author:</strong> {recipe.userName}
+          </p>
+
+          <div>
+            <h3 className="font-bold mb-2">Ingredients</h3>
+
+            <div className="border rounded-lg p-4">
+              {recipe.ingredients}
             </div>
           </div>
 
-          {/* Ingredients */}
-          <Card className="bg-slate-900/40 border border-white/10 p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Ingredients
-            </h2>
+          <div>
+            <h3 className="font-bold mb-2">Instructions</h3>
 
-            <p className="text-slate-300 whitespace-pre-line leading-relaxed">
-              {recipe?.ingredients}
-            </p>
-          </Card>
-
-          {/* Instructions */}
-          <Card className="bg-slate-900/40 border border-white/10 p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Instructions
-            </h2>
-
-            <p className="text-slate-300 whitespace-pre-line leading-relaxed">
-              {recipe?.instructions}
-            </p>
-          </Card>
-
-          {/* Author */}
-          <Card className="bg-slate-900/40 border border-white/10 p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Recipe Author
-            </h2>
-
-            <div className="space-y-2">
-              <p className="text-white font-semibold">
-                {recipe?.authorName || "Anonymous"}
-              </p>
-
-              <p className="text-slate-400">
-                {recipe?.authorEmail || "No email available"}
-              </p>
+            <div className="border rounded-lg p-4">
+              {recipe.instructions}
             </div>
-          </Card>
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <LikeButton recipeId={recipe._id.toString()} />
+
+            <button className="btn btn-success">
+              Purchase
+            </button>
+          </div>
+
         </div>
 
-        {/* Right Sidebar */}
-        <div className="space-y-6">
-          <Card className="bg-slate-900/40 border border-white/10 p-6 space-y-4">
-            <h3 className="text-xl font-bold text-white">
-              Recipe Actions
-            </h3>
-
-            <Button
-              color="danger"
-              className="w-full font-semibold"
-            >
-              ❤️ Add to Favorites
-            </Button>
-
-            <Button
-              variant="bordered"
-              className="w-full font-semibold"
-            >
-              👍 Like Recipe
-            </Button>
-          </Card>
-
-          <Card className="bg-slate-900/40 border border-white/10 p-6">
-            <h3 className="text-xl font-bold text-white mb-4">
-              Recipe Summary
-            </h3>
-
-            <div className="space-y-3 text-sm text-slate-300">
-              <div className="flex justify-between">
-                <span>Category</span>
-                <span>{recipe?.category}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Cooking Time</span>
-                <span>{recipe?.cookingTime} min</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Servings</span>
-                <span>{recipe?.servings}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Likes</span>
-                <span>{recipe?.likesCount || 0}</span>
-              </div>
-            </div>
-          </Card>
-        </div>
       </div>
     </div>
   );
 }
-
-// <Link href={`/recipe/${recipe._id}`}>
-//   View Recipe
-// </Link>
