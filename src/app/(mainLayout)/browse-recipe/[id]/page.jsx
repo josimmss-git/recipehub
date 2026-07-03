@@ -3,6 +3,8 @@ import { ObjectId } from "mongodb";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import LikeButton from "@/components/recipes/LikeButton";
+import PurchaseButton from "@/components/recipes/PurchaseButton";
+import FavoriteButton from "@/components/recipes/FavariteButton";
 
 export default async function RecipeDetailsPage({ params }) {
   const { id } = await params;
@@ -82,11 +84,11 @@ export default async function RecipeDetailsPage({ params }) {
 
           <div className="flex gap-4 pt-4">
             <LikeButton recipeId={recipe._id.toString()} />
+            
+             <FavoriteButton recipeId={recipe._id.toString()} />
 
-            <button className="btn btn-success">
-              Purchase
-            </button>
-          </div>
+  <PurchaseButton recipe={recipe} />
+</div>
 
         </div>
 

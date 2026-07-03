@@ -17,7 +17,10 @@ export default function LikeButton({ recipeId }) {
         method: "PATCH",
       });
 
+      console.log("Status:", res.status);
+
       const result = await res.json();
+      console.log("Response:", result);
 
       if (result.success) {
         toast.success("Recipe liked successfully ❤️");

@@ -55,7 +55,7 @@ export default function DashboardLayout({ children }) {
 
     {
       label: "Purchased Recipes",
-      href: "/dashboard/purchased",
+      href: "/dashboard/my-purchased-recipes",
       icon: FaShoppingBag,
     },
 
