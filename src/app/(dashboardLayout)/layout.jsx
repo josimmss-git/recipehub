@@ -90,37 +90,37 @@ export default function DashboardLayout({ children }) {
   /* =========================
      ADMIN MENU
   ========================= */
-  const admin = [
-    {
-      label: "Overview",
-      href: "/admin",
-      icon: FaHome,
-    },
+ const admin = [
+  {
+    label: "Overview",
+    href: "/dashboard/admin",
+    icon: FaHome,
+  },
 
-    {
-      label: "Manage Users",
-      href: "/admin/users",
-      icon: FaUsers,
-    },
+  {
+    label: "Manage Users",
+    href: "/dashboard/admin/users",
+    icon: FaUsers,
+  },
 
-    {
-      label: "Manage Recipes",
-      href: "/admin/recipes",
-      icon: FaBookOpen,
-    },
+  {
+    label: "Manage Recipes",
+    href: "/dashboard/admin/recipes",
+    icon: FaBookOpen,
+  },
 
-    {
-      label: "Premium Members",
-      href: "/admin/premium",
-      icon: FaCrown,
-    },
+  {
+    label: "Premium Members",
+    href: "/dashboard/admin/premium",
+    icon: FaCrown,
+  },
 
-    {
-      label: "Profile",
-      href: "/dashboard/profile",
-      icon: FaUserCircle,
-    },
-  ];
+  {
+    label: "Profile",
+    href: "/dashboard/profile",
+    icon: FaUserCircle,
+  },
+];
 
   /* =========================
      ROLE BASED MENU

@@ -4,14 +4,14 @@ import { getCurrentUser } from "@/lib/getCurrentUser";
 export default async function AdminLayout({ children }) {
   const user = await getCurrentUser();
 
-  // Not logged in
+  // Login না থাকলে Login Page-এ পাঠাবে
   if (!user) {
     redirect("/login");
   }
 
-  // Not an admin
+  // Admin না হলে Home Page-এ পাঠাবে
   if (user.role !== "admin") {
-    redirect("/unauthorized");
+    redirect("/");
   }
 
   return <>{children}</>;

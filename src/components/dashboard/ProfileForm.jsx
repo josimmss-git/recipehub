@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@heroui/react";
 import { useState } from "react";
 
 export default function ProfileForm({ user }) {
@@ -72,9 +73,9 @@ export default function ProfileForm({ user }) {
         />
       </div>
 
-      <button className="btn btn-primary">
+      <Button className="btn btn-primary" type="submit">
         Update Profile
-      </button>
+      </Button>
 
     </form>
   );

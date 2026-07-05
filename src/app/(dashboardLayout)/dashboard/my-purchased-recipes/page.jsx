@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ObjectId } from "mongodb";
 import dbConnect from "@/lib/dbConnect";
 import { getCurrentUser } from "@/lib/getCurrentUser";
+import { Button } from "@heroui/react";
 
 export default async function MyPurchasedRecipesPage() {
   const user = await getCurrentUser();
@@ -82,7 +83,9 @@ export default async function MyPurchasedRecipesPage() {
                         href={`/recipes/${recipe._id}`}
                         className="btn btn-primary"
                       >
-                        View Details
+                      <Button className="btn btn-primary">
+                        View Recipe
+                      </Button>
                       </Link>
                     </div>
                   </div>
