@@ -1,5 +1,8 @@
 import BlockUserButton from "@/components/dashboard/admin/BlockUserButton";
+import RoleButton from "@/components/dashboard/admin/RoleButton";
 import dbConnect from "@/lib/dbConnect";
+import { getCurrentUser } from "@/lib/getCurrentUser";
+
 import {
   FaSearch,
   FaTrash,
@@ -10,6 +13,8 @@ import {
 } from "react-icons/fa";
 
 export default async function UsersPage() {
+
+  const currentUser = await getCurrentUser();
   const db = await dbConnect();
 
   const users = await db.collection("user").find({}).toArray();
@@ -145,23 +150,33 @@ export default async function UsersPage() {
                   </td>
 
                   {/* Actions */}
-                  <td>
-                    <div className="flex justify-center gap-5">
-                      {user.isBlocked ? (
-                        <button className="btn btn-sm btn-success">
-                          <FaUserCheck />
-                          Unblock
-                        </button>
-                      ) : (
-                        <BlockUserButton id={user._id.toString()} />
-                      )}
+                 <td>
+  <div className="flex justify-center gap-2">
 
-                      <button className="btn btn-sm btn-outline btn-error">
-                        <FaTrash />
-                        Delete
-                      </button>
-                    </div>
-                  </td>
+    {currentUser?.id !== user._id.toString() && (
+  <RoleButton
+    id={user._id.toString()}
+    role={user.role}
+  />
+)}
+    {user.isBlocked ? (
+      <button className="btn btn-sm btn-success">
+        <FaUserCheck />
+        Unblock
+      </button>
+    ) : (
+      <BlockUserButton
+        id={user._id.toString()}
+      />
+    )}
+
+    <button className="btn btn-sm btn-outline btn-error">
+      <FaTrash />
+      Delete
+    </button>
+
+  </div>
+</td>
                 </tr>
               ))}
 
