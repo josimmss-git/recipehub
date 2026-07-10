@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
+import { Button } from "@heroui/react";
 
 export default function PurchaseButton({ recipe }) {
   const { data: session } = useSession();
@@ -36,8 +37,11 @@ export default function PurchaseButton({ recipe }) {
 
   return (
     <button
+      color="success"
+      radius="full"
       onClick={handlePurchase}
-      className="btn btn-success"
+      className="px-8 shadow-lg shadow-success/30 hover:scale-105 transition-transform outline-2 outline-success/50
+      rounded-full text-white font-semibold py-2 bg-success"
     >
       Purchase
     </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
+import { Button } from "@heroui/react";
 
 export default function FavoriteButton({ recipeId }) {
   const { data: session } = useSession();
@@ -32,11 +33,14 @@ export default function FavoriteButton({ recipeId }) {
   };
 
   return (
-    <button
+    <Button
+      color="danger"
+      radius="full"
+      variant="flat"
       onClick={handleFavorite}
-      className="btn btn-warning"
+      className="hover:scale-105 transition-transform"
     >
       ❤️ Favorite
-    </button>
+    </Button>
   );
 }

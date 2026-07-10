@@ -5,6 +5,7 @@ import Image from "next/image";
 import LikeButton from "@/components/recipes/LikeButton";
 import PurchaseButton from "@/components/recipes/PurchaseButton";
 import FavoriteButton from "@/components/recipes/FavariteButton";
+import ReportRecipeButton from "@/components/recipes/ReportRecipeButton";
 
 export default async function RecipeDetailsPage({ params }) {
   const { id } = await params;
@@ -81,14 +82,19 @@ export default async function RecipeDetailsPage({ params }) {
               {recipe.instructions}
             </div>
           </div>
+     <div className="flex flex-wrap gap-4   pt-4">
+     <LikeButton recipeId={recipe._id. toString()} />
 
-          <div className="flex gap-4 pt-4">
-            <LikeButton recipeId={recipe._id.toString()} />
-            
-             <FavoriteButton recipeId={recipe._id.toString()} />
+  <FavoriteButton recipeId={recipe._id.toString()} />
 
   <PurchaseButton recipe={recipe} />
-</div>
+
+  <ReportRecipeButton
+    recipeId={recipe._id.toString()}
+    recipeTitle={recipe.title}
+    userEmail={recipe.userEmail}
+    />
+     </div>
 
         </div>
 

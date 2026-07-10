@@ -110,14 +110,14 @@ export default function DashboardLayout({ children }) {
   },
 
   {
-    label: "Premium Members",
-    href: "/dashboard/admin/premium",
-    icon: FaCrown,
+    label: "Review Reports",
+    href: "/dashboard/admin/reports",
+    icon: FaFlag,
   },
 
   {
-    label: "Profile",
-    href: "/dashboard/profile",
+    label: "Moderate Platform Activities",
+    href: "/dashboard/admin/moderation",
     icon: FaUserCircle,
   },
 ];

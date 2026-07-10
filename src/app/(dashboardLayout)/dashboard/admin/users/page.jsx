@@ -1,4 +1,5 @@
 import BlockUserButton from "@/components/dashboard/admin/BlockUserButton";
+import DeleteUserButton from "@/components/dashboard/admin/DeleteUserButton";
 import RoleButton from "@/components/dashboard/admin/RoleButton";
 import dbConnect from "@/lib/dbConnect";
 import { getCurrentUser } from "@/lib/getCurrentUser";
@@ -136,7 +137,7 @@ export default async function UsersPage() {
                   </td>
 
                   {/* Verified */}
-                  <td>
+                  {/* <td>
                     {user.emailVerified ? (
                       <span className="text-success flex items-center gap-2">
                         <FaCheckCircle />
@@ -147,19 +148,23 @@ export default async function UsersPage() {
                         Pending
                       </span>
                     )}
-                  </td>
+                  </td> */}
 
                   {/* Actions */}
                  <td>
-  <div className="flex justify-center gap-2">
+   <div className="flex justify-center gap-2">
 
-    {currentUser?.id !== user._id.toString() && (
-  <RoleButton
+     {currentUser?._id !== user._id.toString() && (
+    <RoleButton
     id={user._id.toString()}
     role={user.role}
-  />
-)}
-    {user.isBlocked ? (
+                        />
+                        
+
+                      )}
+                      
+    
+                      {user.isBlocked ? (
       <button className="btn btn-sm btn-success">
         <FaUserCheck />
         Unblock
@@ -170,14 +175,12 @@ export default async function UsersPage() {
       />
     )}
 
-    <button className="btn btn-sm btn-outline btn-error">
-      <FaTrash />
-      Delete
-    </button>
+    <DeleteUserButton id={user._id.toString()} />
 
   </div>
 </td>
                 </tr>
+
               ))}
 
               {users.length === 0 && (
