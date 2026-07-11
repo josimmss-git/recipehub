@@ -3,52 +3,30 @@ import { ObjectId } from "mongodb";
 import dbConnect from "@/lib/dbConnect";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
-export async function DELETE(request, { params }) {
+export async function DELETE(req, { params }) {
   try {
-    // Next.js 16
-    const { id } = await params;
-
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid recipe ID.",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Current User
     const currentUser = await getCurrentUser();
 
-    if (!currentUser) {
+    if (!currentUser || currentUser.role !== "admin") {
       return NextResponse.json(
         {
           success: false,
-          message: "Unauthorized.",
+          message: "Unauthorized",
         },
         { status: 401 }
       );
     }
 
-    // Only Admin
-    if (currentUser.role !== "admin") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Only admin can delete recipes.",
-        },
-        { status: 403 }
-      );
-    }
-
     const db = await dbConnect();
 
-    const result = await db.collection("recipes").deleteOne({
-      _id: new ObjectId(id),
+    const recipeId = new ObjectId(params.id);
+
+    // Delete recipe
+    const recipeResult = await db.collection("recipes").deleteOne({
+      _id: recipeId,
     });
 
-    if (result.deletedCount === 0) {
+    if (recipeResult.deletedCount === 0) {
       return NextResponse.json(
         {
           success: false,
@@ -58,17 +36,22 @@ export async function DELETE(request, { params }) {
       );
     }
 
+    // Delete all reports related to this recipe
+    await db.collection("reports").deleteMany({
+      recipeId: recipeId,
+    });
+
     return NextResponse.json({
       success: true,
-      message: "Recipe deleted successfully.",
+      message: "Recipe removed successfully.",
     });
   } catch (error) {
-    console.error("DELETE RECIPE ERROR:", error);
+    console.error(error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Internal Server Error",
+        message: "Something went wrong.",
       },
       { status: 500 }
     );

@@ -1,8 +1,7 @@
+import MarkReviewedButton from "@/components/dashboard/admin/MarkReviewedButton";
+import DeleteRecipeButton from "@/components/dashboard/DeleteRecipeButton";
 import dbConnect from "@/lib/dbConnect";
-import { ObjectId } from "mongodb";
-import DeleteReportButton from "@/components/admin/DeleteReportButton";
-import DeleteRecipeButton from "@/components/admin/DeleteRecipeButton";
-import MarkReviewedButton from "@/components/admin/MarkReviewedButton";
+import { Card, CardHeader, Chip, Avatar } from "@heroui/react";
 
 export default async function ReportsPage() {
   const db = await dbConnect();
@@ -14,75 +13,143 @@ export default async function ReportsPage() {
     .toArray();
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">
-        Review Reports
-      </h1>
+    <div className="space-y-8">
+      {/* Header */}
+     <div className="flex items-center justify-between">
+  <div>
+    <h1 className="text-3xl font-bold tracking-tight">
+      Review Reports
+    </h1>
 
-      <div className="overflow-x-auto bg-base-100 rounded-xl border">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Recipe</th>
-              <th>Reported By</th>
-              <th>Reason</th>
-              <th>Message</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+    <p className="text-default-500 mt-1">
+      Review reported recipes and moderate platform activities.
+    </p>
+  </div>
 
-          <tbody>
-            {reports.map((report, index) => (
-              <tr key={report._id.toString()}>
-                <td>{index + 1}</td>
+  <Chip
+    color="primary"
+    variant="shadow"
+    size="lg"
+    className="font-semibold"
+  >
+    {reports.length} Reports
+  </Chip>
+</div>
 
-                <td>{report.recipeTitle}</td>
+      {reports.length === 0 ? (
+        <Card>
+          <div className="py-16 text-center">
+            <h2 className="text-2xl font-semibold">No Reports Found</h2>
+            <p className="text-default-500 mt-2">
+              Great! There are no reports to review.
+            </p>
+          </div>
+        </Card>
+      ) : (
+        <div className="grid gap-6">
+          {reports.map((report, index) => (
+            <Card
+              key={report._id.toString()}
+              shadow="sm"
+              className="border border-default-200"
+            >
+              <CardHeader className="flex justify-between items-start gap-4">
+                <div className="flex items-center gap-4">
+                  <Avatar
+                    radius="lg"
+                    size="lg"
+                    src={
+                      report.recipeImage ||
+                      "https://placehold.co/80x80"
+                    }
+                  />
 
-                <td>{report.reportedBy}</td>
+                  <div>
+                    <h2 className="font-bold text-lg">
+                      {report.recipeTitle}
+                    </h2>
 
-                <td>{report.reason}</td>
+                    <p className="text-default-500 text-sm">
+                      Report #{index + 1}
+                    </p>
+                  </div>
+                </div>
 
-                <td className="max-w-xs">
-                  {report.message}
-                </td>
+                <Chip
+                  color={
+                    report.status === "Reviewed"
+                      ? "success"
+                      : "warning"
+                  }
+                  variant="flat"
+                >
+                  {report.status}
+                </Chip>
+              </CardHeader>
 
-                <td>
-                  <span
-                    className={`badge ${
-                      report.status === "Reviewed"
-                        ? "badge-success"
-                        : "badge-warning"
-                    }`}
-                  >
-                    {report.status}
-                  </span>
-                </td>
+              <div>
+                <div className="grid md:grid-cols-2 gap-6">
 
-                <td>
-                  <div className="flex gap-2">
+                  <div className="space-y-3">
 
-                    <MarkReviewedButton
-                      id={report._id.toString()}
-                    />
+                    <div>
+                      <p className="text-sm text-whiite-500 mb-1">
+                        Reported By
+                      </p>
 
-                    <DeleteRecipeButton
-                      id={report.recipeId}
-                    />
+                      <p className="font-medium text-white-900">
+                        {report.reporName}
+                      </p>
 
-                    <DeleteReportButton
-                      id={report._id.toString()}
-                    />
+                      {report.email && (
+                        <p className="text-sm text-default-500">
+                          {report.email}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-default-500">
+                        Reason
+                      </p>
+
+                      <Chip
+                        color="danger"
+                        variant="flat"
+                        size="sm"
+                      >
+                        {report.reason}
+                      </Chip>
+                    </div>
 
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
 
-        </table>
-      </div>
+                  <div>
+                    <p className="text-sm text-default-500 mb-2">
+                      Message
+                    </p>
+
+                    <div className="rounded-xl bg-default-100 p-4 text-sm">
+                      {report.message || "No message provided."}
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="flex justify-end gap-3 mt-6">
+                  <MarkReviewedButton
+                    id={report._id.toString()}
+                  />
+
+                  <DeleteRecipeButton
+                    id={report.recipeId}
+                  />
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

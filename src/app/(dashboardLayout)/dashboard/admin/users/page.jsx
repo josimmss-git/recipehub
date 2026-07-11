@@ -62,7 +62,7 @@ export default async function UsersPage() {
                 <th>Role</th>
                 <th>Premium</th>
                 <th>Status</th>
-                <th>Verified</th>
+              
                 <th className="text-center">Actions</th>
               </tr>
             </thead>

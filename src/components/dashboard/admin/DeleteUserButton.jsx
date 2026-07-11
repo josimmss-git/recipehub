@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { FaTrash } from "react-icons/fa";
+import { Button } from "@heroui/react";
 
 export default function DeleteUserButton({ id }) {
   const router = useRouter();
@@ -38,11 +39,13 @@ export default function DeleteUserButton({ id }) {
   };
 
   return (
-    <button
+    <Button
+      
+      
       onClick={handleDelete}
       className="btn btn-sm btn-error text-white"
     >
       <FaTrash />
-    </button>
+    </Button>
   );
 }

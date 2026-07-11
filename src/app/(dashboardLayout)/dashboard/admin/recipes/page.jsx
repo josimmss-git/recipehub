@@ -103,13 +103,13 @@ export default async function ManageRecipesPage() {
                   <td>{recipe.cuisine}</td>
 
                   {/* Author */}
-                  <td>{recipe.authorName}</td>
+                  <td>{recipe.userName}</td>
 
                   {/* Likes */}
                   <td>
                     <span className="badge badge-primary gap-2">
                       <FaHeart />
-                      {recipe.likes || 0}
+                      {recipe.likeCount || 0}
                     </span>
                   </td>
 

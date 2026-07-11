@@ -10,55 +10,33 @@ export default function DeleteRecipeButton({ id }) {
   const handleDelete = async () => {
     const result = await Swal.fire({
       title: "Delete Recipe?",
-      text: "This recipe will be permanently deleted!",
+      text: "This action cannot be undone!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, Delete",
+      confirmButtonColor: "#ef4444",
+      confirmButtonText: "Delete",
     });
 
     if (!result.isConfirmed) return;
 
-    try {
-      const res = await fetch(`/api/admin/recipes/${id}`, {
-        method: "DELETE",
-      });
+    const res = await fetch(`/api/admin/recipes/${id}`, {
+      method: "DELETE",
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (res.ok && data.success) {
-        await Swal.fire({
-          icon: "success",
-          title: "Deleted!",
-          text: data.message,
-          timer: 1500,
-          showConfirmButton: false,
-        });
-
-        router.refresh();
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: data.message || "Delete failed.",
-        });
-      }
-    } catch (error) {
-      console.error(error);
-
-      Swal.fire({
-        icon: "error",
-        title: "Server Error",
-        text: "Something went wrong.",
-      });
+    if (data.success) {
+      Swal.fire("Deleted!", data.message, "success");
+      router.refresh();
+    } else {
+      Swal.fire("Error", data.message, "error");
     }
   };
 
   return (
     <button
       onClick={handleDelete}
-      className="btn btn-sm btn-error text-white"
+      className="btn btn-error btn-sm"
     >
       <FaTrash />
     </button>

@@ -57,7 +57,7 @@ export default async function PopularRecipes() {
             </div>
           ))}
         </div>
-        <Link href="/browse-recipes" className="text-3xl font-bold text-center mb-10 mx-auto block mt-10">
+        <Link href="/browse-recipe" className="text-3xl font-bold text-center mb-10 mx-auto block mt-10">
          <Button> See More Recipes</Button>
         </Link>
       </div>
