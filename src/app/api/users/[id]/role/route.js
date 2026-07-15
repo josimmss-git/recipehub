@@ -7,6 +7,7 @@ export async function PATCH(req, { params }) {
   try {
     const currentUser = await getCurrentUser();
 
+    // User not logged in
     if (!currentUser) {
       return NextResponse.json(
         {
@@ -17,35 +18,39 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    // Only Admin
     if (currentUser.role !== "admin") {
       return NextResponse.json(
         {
           success: false,
-          message: "Access Denied",
+          message: "Access denied",
         },
         { status: 403 }
       );
     }
 
-    // ✅ Next.js 16
-    const { id } = await params;
+    const { id } = params;
 
+    // Check ObjectId
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid User ID",
+          message: "Invalid user id.",
         },
         { status: 400 }
       );
     }
 
-    // ✅ Better Auth
-    if (currentUser.id === id) {
+    const body = await req.json();
+    const { role } = body;
+
+    // Validate role
+    if (!["user", "admin"].includes(role)) {
       return NextResponse.json(
         {
           success: false,
-          message: "You can't block yourself.",
+          message: "Invalid role.",
         },
         { status: 400 }
       );
@@ -53,19 +58,12 @@ export async function PATCH(req, { params }) {
 
     const db = await dbConnect();
 
-    const result = await db.collection("user").updateOne(
-      {
-        _id: new ObjectId(id),
-      },
-      {
-        $set: {
-          isBlocked: true,
-          updatedAt: new Date(),
-        },
-      }
-    );
+    // Find user
+    const user = await db.collection("user").findOne({
+      _id: new ObjectId(id),
+    });
 
-    if (result.matchedCount === 0) {
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
@@ -75,17 +73,54 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    // Prevent changing your own role
+    if (currentUser._id.toString() === id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "You can't change your own role.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Update role
+    const result = await db.collection("user").updateOne(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        $set: {
+          role,
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "No changes were made.",
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      message: "User blocked successfully.",
+      message:
+        role === "admin"
+          ? "User promoted to Admin successfully."
+          : "Admin removed successfully.",
     });
   } catch (error) {
-    console.error("Block User Error:", error);
+    console.error("Role Update Error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: error.message,
+        message: "Internal Server Error",
       },
       { status: 500 }
     );

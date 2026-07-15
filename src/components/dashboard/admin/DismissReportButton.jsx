@@ -1,59 +1,111 @@
-"use client";
+import dbConnect from "@/lib/dbConnect";
+import DeleteRecipeButton from "@/components/dashboard/DeleteRecipeButton";
+import DismissReportButton from "@/components/dashboard/admin/DismissReportButton";
 
-import { Button } from "@heroui/react";
-import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
-import { FaCheckCircle } from "react-icons/fa";
+export default async function ReportsPage() {
+  const db = await dbConnect();
 
-export default function DismissReportButton({ id }) {
-  const router = useRouter();
-
-  const handleDismiss = async () => {
-    const result = await Swal.fire({
-      title: "Dismiss Report?",
-      text: "This report will be marked as dismissed.",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#16a34a",
-      cancelButtonColor: "#6b7280",
-      confirmButtonText: "Yes, Dismiss",
-    });
-
-    if (!result.isConfirmed) return;
-
-    try {
-      const res = await fetch(`/api/reports/${id}`, {
-        method: "PATCH",
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: data.message,
-          timer: 1500,
-          showConfirmButton: false,
-        });
-
-        router.refresh();
-      } else {
-        Swal.fire("Error", data.message, "error");
-      }
-    } catch (error) {
-      Swal.fire("Error", error.message, "error");
-    }
-  };
+  const reports = await db
+    .collection("reports")
+    .find({ status: "pending" })
+    .sort({ createdAt: -1 })
+    .toArray();
 
   return (
-    <Button
-      color="success"
-      variant="flat"
-      startContent={<FaCheckCircle />}
-      onPress={handleDismiss}
-    >
-      Dismiss
-    </Button>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div>
+          <h1 className="text-4xl font-bold flex items-center gap-3">
+            Recipe Reports <span className="text-3xl">🚩</span>
+          </h1>
+          <p className="text-base-content/60 mt-1">
+            {reports.length} pending reports
+          </p>
+        </div>
+
+        {/* Status Tabs */}
+        <div className="flex gap-1 bg-base-200 p-1 rounded-xl">
+          <button className="btn btn-sm btn-primary rounded-xl px-6">Pending</button>
+          <button className="btn btn-sm btn-ghost px-6">Dismissed</button>
+          <button className="btn btn-sm btn-ghost px-6">All</button>
+        </div>
+      </div>
+
+      {/* Main Table */}
+      <div className="bg-base-100 rounded-2xl border shadow overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="table w-full">
+            <thead className="bg-base-200">
+              <tr>
+                <th>Recipe ID</th>
+                <th>Reporter</th>
+                <th>Reason</th>
+                <th>Description</th>
+                <th>Reported</th>
+                <th className="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reports.map((report) => (
+                <tr key={report._id.toString()} className="hover:bg-base-200/50">
+                  <td className="font-mono text-sm">
+                    {report.recipeId?.toString().slice(0, 8)}...
+                  </td>
+
+                  <td>
+                    <div className="font-medium">{report.reporterName || report.email}</div>
+                    {report.email && (
+                      <div className="text-xs text-base-content/60">{report.email}</div>
+                    )}
+                  </td>
+
+                  <td>
+                    <span className={`badge ${
+                      report.reason?.toLowerCase().includes("offensive") 
+                        ? "badge-error" 
+                        : "badge-warning"
+                    }`}>
+                      {report.reason}
+                    </span>
+                  </td>
+
+                  <td className="max-w-md truncate text-sm">
+                    {report.message || report.description || "—"}
+                  </td>
+
+                  <td className="text-sm opacity-70">
+                    {new Date(report.createdAt).toLocaleDateString("en-GB")}
+                  </td>
+
+                  <td>
+                    <div className="flex justify-center gap-3">
+                      {/* Remove Recipe */}
+                      <DeleteRecipeButton
+                        id={report.recipeId}
+                        className="btn btn-sm bg-red-500 hover:bg-red-600 text-white border-none"
+                      >
+                        Remove Recipe
+                      </DeleteRecipeButton>
+
+                      {/* Dismiss Report */}
+                      <DismissReportButton id={report._id.toString()} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {reports.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-16 text-base-content/60">
+                    No pending reports found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 }

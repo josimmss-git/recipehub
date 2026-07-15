@@ -305,7 +305,7 @@ export default function RegisterPage() {
             </TextField>
 
             {/* Role */}
-            <div className="flex flex-col gap-2 w-full">
+            {/* <div className="flex flex-col gap-2 w-full">
               <Label
                 htmlFor="role"
                 className="text-sm font-semibold text-slate-300"
@@ -324,7 +324,7 @@ export default function RegisterPage() {
               {errors.role && (
                 <p className="text-red-400 text-xs">{errors.role.message}</p>
               )}
-            </div>
+            </div> */}
 
             <Button
               type="submit"

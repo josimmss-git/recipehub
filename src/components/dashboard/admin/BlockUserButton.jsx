@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FaUserSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 export default function BlockUserButton({ id }) {
@@ -46,9 +45,8 @@ export default function BlockUserButton({ id }) {
   return (
     <button
       onClick={handleBlock}
-      className="btn btn-warning btn-sm"
+      className="rounded-full bg-red-50 text-red-600 text-xs font-semibold px-4 py-1.5 hover:bg-red-100 transition-colors"
     >
-      <FaUserSlash />
       Block
     </button>
   );

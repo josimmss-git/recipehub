@@ -1,12 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
 import { FaTrash } from "react-icons/fa";
-import { Button } from "@heroui/react";
+import Swal from "sweetalert2";
 
 export default function DeleteUserButton({ id }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
     const result = await Swal.fire({
@@ -14,38 +15,68 @@ export default function DeleteUserButton({ id }) {
       text: "This action cannot be undone!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, Delete",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6b7280",
     });
 
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch(`/api/admin/users/${id}`, {
+      setLoading(true);
+
+      const res = await fetch(`/api/admin/users/${id}/delete`, {
         method: "DELETE",
       });
 
       const data = await res.json();
 
       if (data.success) {
-        Swal.fire("Deleted!", data.message, "success");
+        await Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "User deleted successfully.",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
         router.refresh();
       } else {
-        Swal.fire("Error!", data.message, "error");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: data.message || "Failed to delete user.",
+        });
       }
     } catch (error) {
-      console.error(error);
-      Swal.fire("Error!", "Delete failed. Server error.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Something went wrong.",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Button
-      
-      
+    <button
       onClick={handleDelete}
-      className="btn btn-sm btn-error text-white"
+      disabled={loading}
+      className="btn btn-error btn-sm gap-2"
     >
-      <FaTrash />
-    </Button>
+      {loading ? (
+        <>
+          <span className="loading loading-spinner loading-xs"></span>
+          Deleting...
+        </>
+      ) : (
+        <>
+          <FaTrash />
+          Delete
+        </>
+      )}
+    </button>
   );
 }

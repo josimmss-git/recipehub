@@ -82,15 +82,24 @@ export async function getMyRecipes() {
 
   return JSON.parse(JSON.stringify(recipes));
 }
-
-export async function getAllRecipes() {
+export async function getAllRecipes(search = "") {
   const db = await dbConnect();
+
+  const query = {};
+
+  // Search by recipe title
+  if (search) {
+    query.title = {
+      $regex: search,
+      $options: "i", // case-insensitive
+    };
+  }
 
   const recipes = await db
     .collection("recipes")
-    .find({})
+    .find(query)
     .sort({ createdAt: -1 })
     .toArray();
 
-  return recipes;
+  return JSON.parse(JSON.stringify(recipes));
 }

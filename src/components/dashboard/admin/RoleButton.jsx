@@ -1,23 +1,27 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FaUserShield, FaUser } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 export default function RoleButton({ id, role }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleRoleChange = async () => {
-    const newRole = role === "user" ? "admin" : "user";
+  const isAdmin = role === "admin";
 
+  const handleRoleChange = async () => {
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: `You want to make this user ${newRole}?`,
+      title: isAdmin ? "Remove Admin?" : "Make Admin?",
+      text: isAdmin
+        ? "This user will be changed to a normal user."
+        : "This user will become an administrator.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes",
+      confirmButtonText: isAdmin ? "Remove Admin" : "Make Admin",
       cancelButtonText: "Cancel",
+      confirmButtonColor: isAdmin ? "#d33" : "#2563eb",
     });
 
     if (!result.isConfirmed) return;
@@ -25,43 +29,36 @@ export default function RoleButton({ id, role }) {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/admin/users/role", {
-        method: "PUT",
+      const res = await fetch(`/api/admin/users/${id}/role`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id,
-          role: newRole,
+          role: isAdmin ? "user" : "admin",
         }),
       });
 
       const data = await res.json();
 
-      if (data.success) {
-        await Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: data.message,
-          timer: 1500,
-          showConfirmButton: false,
-        });
-
-        router.refresh();
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: data.message,
-        });
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to update role.");
       }
-    } catch (error) {
-      console.error(error);
 
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: data.message,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      router.refresh();
+    } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Something went wrong!",
-        text: "Please try again.",
+        title: "Error",
+        text: error.message || "Something went wrong.",
       });
     } finally {
       setLoading(false);
@@ -72,17 +69,23 @@ export default function RoleButton({ id, role }) {
     <button
       onClick={handleRoleChange}
       disabled={loading}
-      className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
-        role === "user"
-          ? "bg-blue-600 hover:bg-blue-700 text-white"
-          : "bg-orange-600 hover:bg-orange-700 text-white"
-      } disabled:opacity-50`}
+      className={`btn btn-sm gap-2 ${
+        isAdmin ? "btn-error" : "btn-primary"
+      }`}
     >
-      {loading
-        ? "Updating..."
-        : role === "user"
-        ? "Make Admin"
-        : "Remove Admin"}
+      {loading ? (
+        <span className="loading loading-spinner loading-xs"></span>
+      ) : isAdmin ? (
+        <>
+          <FaUser />
+          Remove Admin
+        </>
+      ) : (
+        <>
+          <FaUserShield />
+          Make Admin
+        </>
+      )}
     </button>
   );
 }

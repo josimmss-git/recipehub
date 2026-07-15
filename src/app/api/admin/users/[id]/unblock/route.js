@@ -7,6 +7,7 @@ export async function PATCH(req, { params }) {
   try {
     const currentUser = await getCurrentUser();
 
+    // Not logged in
     if (!currentUser) {
       return NextResponse.json(
         {
@@ -17,11 +18,12 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    // Only admin
     if (currentUser.role !== "admin") {
       return NextResponse.json(
         {
           success: false,
-          message: "Access Denied",
+          message: "Access denied",
         },
         { status: 403 }
       );
@@ -30,22 +32,12 @@ export async function PATCH(req, { params }) {
     // ✅ Next.js 16
     const { id } = await params;
 
+    // ✅ Validate ObjectId
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         {
           success: false,
           message: "Invalid User ID",
-        },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Better Auth
-    if (currentUser.id === id) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "You can't block yourself.",
         },
         { status: 400 }
       );
@@ -59,7 +51,7 @@ export async function PATCH(req, { params }) {
       },
       {
         $set: {
-          isBlocked: true,
+          isBlocked: false,
           updatedAt: new Date(),
         },
       }
@@ -69,7 +61,7 @@ export async function PATCH(req, { params }) {
       return NextResponse.json(
         {
           success: false,
-          message: "User not found.",
+          message: "User not found",
         },
         { status: 404 }
       );
@@ -77,10 +69,10 @@ export async function PATCH(req, { params }) {
 
     return NextResponse.json({
       success: true,
-      message: "User blocked successfully.",
+      message: "User unblocked successfully.",
     });
   } catch (error) {
-    console.error("Block User Error:", error);
+    console.error("Unblock User Error:", error);
 
     return NextResponse.json(
       {

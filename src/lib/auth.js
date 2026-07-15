@@ -49,7 +49,10 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 60 * 5, // 5 minutes
+      maxAge: 60 * 0, // 1 minute
     },
   },
+  plan: {
+    defaultValue: "free", // free | premium
+  }
 });
