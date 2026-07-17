@@ -1,9 +1,9 @@
-import { getMyRecipes } from "@/lib/api/recipes/action";
+import { getAllMyRecipes } from "@/lib/api/recipes/action";
 import DeleteRecipeButton from "@/components/dashboard/DeleteRecipeButton";
 import Link from "next/link";
 
 export default async function MyRecipesPage() {
-  const recipes = await getMyRecipes();
+  const recipes = await getAllMyRecipes();
 
   return (
     <div className="space-y-8">

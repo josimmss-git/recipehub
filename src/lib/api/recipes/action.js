@@ -3,7 +3,7 @@
 import dbConnect from "@/lib/dbConnect";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
-export async function getDashboardStats() {
+export async function getMyRecipes() {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -59,9 +59,9 @@ export async function getDashboardStats() {
 }
 
 // =============================
-// Get My Recipes
+// Get All Recipes of Logged-in User (for My Recipes page)
 // =============================
-export async function getMyRecipes() {
+export async function getAllMyRecipes() {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -72,34 +72,40 @@ export async function getMyRecipes() {
 
   const recipes = await db
     .collection("recipes")
-    .find({
-      userEmail: user.email,
-    })
-    .sort({
-      createdAt: -1,
-    })
-    .toArray();
-
-  return JSON.parse(JSON.stringify(recipes));
-}
-export async function getAllRecipes(search = "") {
-  const db = await dbConnect();
-
-  const query = {};
-
-  // Search by recipe title
-  if (search) {
-    query.title = {
-      $regex: search,
-      $options: "i", // case-insensitive
-    };
-  }
-
-  const recipes = await db
-    .collection("recipes")
-    .find(query)
+    .find({ userEmail: user.email })
     .sort({ createdAt: -1 })
     .toArray();
 
   return JSON.parse(JSON.stringify(recipes));
 }
+
+// =============================
+// Get All Recipes (public, with filters)
+// =============================
+export async function getAllRecipes(filters = {}) {
+  const { search = "", category = "", cuisine = "", difficulty = "", sort = "Newest" } = filters;
+
+  const db = await dbConnect();
+  const query = {};
+
+  if (search) query.title = { $regex: search, $options: "i" };
+  if (category && category !== "All Categories") query.category = category;
+  if (cuisine && cuisine !== "All Cuisines") query.cuisine = cuisine;
+  if (difficulty && difficulty !== "All Difficulties") query.difficulty = difficulty;
+
+  let sortOption = {};
+  switch (sort) {
+    case "Most Liked":
+      sortOption = { likeCount: -1 };
+      break;
+    case "Preparation Time":
+      sortOption = { preparationTime: 1 };
+      break;
+    default:
+      sortOption = { createdAt: -1 };
+  }
+
+  const recipes = await db.collection("recipes").find(query).sort(sortOption).toArray();
+  return JSON.parse(JSON.stringify(recipes));
+}
+

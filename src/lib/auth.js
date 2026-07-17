@@ -35,12 +35,10 @@ export const auth = betterAuth({
       },
 
       isPremium: {
-        type: "boolean",
         defaultValue: false,
       },
 
       isBlocked: {
-        type: "boolean",
         defaultValue: false,
       },
     },

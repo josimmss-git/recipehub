@@ -155,7 +155,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <OverviewItems />
+         <OverviewItems /> 
         <h1 className="text-3xl font-bold">Dashboard</h1>
 
         <p className="text-default-500 mt-2">

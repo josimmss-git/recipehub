@@ -117,7 +117,7 @@ export default function DashboardLayout({ children }) {
 
   {
     label: "Moderate Platform Activities",
-    href: "/dashboard/admin/moderation",
+    href: "/dashboard/admin/transactions",
     icon: FaUserCircle,
   },
 ];
