@@ -15,9 +15,7 @@ export async function POST(req) {
           success: false,
           message: "Unauthorized",
         },
-        {
-          status: 401,
-        }
+        { status: 401 }
       );
     }
 
@@ -25,6 +23,36 @@ export async function POST(req) {
 
     const db = await dbConnect();
 
+    // Collections
+    const usersCollection = db.collection("users");
+    const recipesCollection = db.collection("recipes");
+
+    // Get Current User From Database
+    const dbUser = await usersCollection.findOne({
+      email: session.user.email,
+    });
+
+    // Count User Recipes
+    const totalRecipes = await recipesCollection.countDocuments({
+      userEmail: session.user.email,
+    });
+
+    // Business Logic
+    if (!dbUser?.isPremium && totalRecipes >= 2) {
+      return NextResponse.json(
+        {
+          success: false,
+          premiumRequired: true,
+          message:
+            "You have reached the maximum limit of 2 recipes. Upgrade to Premium to create unlimited recipes.",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
+    // Create Recipe
     const recipe = {
       title: body.title,
       image: body.image,
@@ -44,7 +72,7 @@ export async function POST(req) {
       createdAt: new Date(),
     };
 
-    await db.collection("recipes").insertOne(recipe);
+    await recipesCollection.insertOne(recipe);
 
     return NextResponse.json({
       success: true,

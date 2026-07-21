@@ -41,7 +41,7 @@ const Footer = () => {
 
               <li>
                 <Link
-                  href="/recipes"
+                  href="/browse-recipe"
                   className="hover:text-orange-500 transition"
                 >
                   Browse Recipes

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { Button } from "@heroui/react";
 import { FaImage } from "react-icons/fa";
 import { uploadImage } from "@/lib/imgbb";
+import Link from "next/link";
 
 export default function AddRecipePage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function AddRecipePage() {
   const [imagePreview, setImagePreview] = useState("");
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [imageUploadError, setImageUploadError] = useState("");
+  const [premiumRequired, setPremiumRequired] = useState(false);
 
   const {
     register,
@@ -74,13 +76,21 @@ export default function AddRecipePage() {
       const result = await res.json();
 
       if (result.success) {
-        toast.success("Recipe added successfully");
-        reset();
-        setImagePreview("");
-        router.push("/dashboard/my-recipes");
-      } else {
-        toast.error(result.message || "Something went wrong");
-      }
+  toast.success(result.message);
+
+  reset();
+  setImagePreview("");
+  setPremiumRequired(false);
+
+  router.push("/dashboard/my-recipes");
+} else {
+  toast.error(result.message);
+
+  if (result.premiumRequired) {
+    setPremiumRequired(true);
+  }
+}
+
     } catch (error) {
       console.error(error);
       toast.error("Failed to add recipe");
@@ -271,6 +281,25 @@ export default function AddRecipePage() {
           </p>
         )}
       </div>
+
+      {premiumRequired && (
+  <div className="border border-yellow-400 bg-yellow-50 rounded-xl p-5 space-y-3">
+    <h3 className="text-lg font-bold text-yellow-700">
+      Premium Membership Required
+    </h3>
+
+    <p className="text-gray-700">
+      You have reached the maximum limit of 2 recipes.
+      Upgrade to Premium to create unlimited recipes.
+    </p>
+
+    <Link href="/premium">
+      <Button color="warning">
+        Become Premium
+      </Button>
+    </Link>
+  </div>
+)}
 
       <Button
         type="submit"

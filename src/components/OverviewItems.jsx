@@ -16,9 +16,9 @@ const FREE_RECIPE_LIMIT = 2;
 
 const OverviewItems = ({ stats, isPremium = false, recentRecipes = [] }) => {
   const {
-    totalRecipes = 0,
-    totalFavorites = 0,
-    totalViews = 0,
+    Recipes = 0,
+    tFavorites = 0,
+    
     savedRecipes = 0,
   } = stats || {};
 

@@ -23,11 +23,12 @@ export default function Navbar() {
 
   const isLoggedIn = !!session?.user;
   const user = session?.user;
- console.log(user,"this is users")
+
 
   // role এর স্পেস বাদ দিয়ে hyphen দিয়ে slug বানানো
   // যেমন: "normal user" -> "normal-user", "premium user" -> "premium-user"
   const roleSlug = user?.role ? user.role.trim().toLowerCase().replace(/\s+/g, "-") : "normal-user";
+  console.log(roleSlug,"this is role slug")
 
   // নামের প্রথম অক্ষর দিয়ে initial বানানো (profile image না থাকলে এটা দেখাবে)
   const userInitial = user?.name ? user.name.trim().charAt(0).toUpperCase() : "?";
@@ -130,7 +131,7 @@ export default function Navbar() {
                   {/* User info */}
                   <div className="px-4 py-2.5 border-b border-white/5 mb-1.5 cursor-default">
                     <p className="text-[10px] text-pink-400 font-bold uppercase tracking-wider">
-                      {user?.role || "Normal"} Account
+                      {user?.role} Account
                     </p>
                     <p className="font-bold text-white text-sm mt-0.5">{user?.name}</p>
                     <p className="text-[11px] text-slate-400 truncate mt-0.5">{user?.email}</p>

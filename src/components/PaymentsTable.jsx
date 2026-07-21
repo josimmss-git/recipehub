@@ -1,13 +1,16 @@
+"use client";
+
+
+
 import {
   Card,
   Table,
-  TableContent,
   TableHeader,
   TableColumn,
   TableBody,
   TableRow,
   TableCell,
-  Chip
+  Chip,
 } from "@heroui/react";
 
 const PaymentsTable = () => {
@@ -15,52 +18,78 @@ const PaymentsTable = () => {
     {
       _id: "p1",
       transactionId: "ch_mock_stripe_transaction_12345",
-      amount: 298.00,
+      amount: 298,
       paidAt: "2026-06-03T10:00:00Z",
-      paymentStatus: "paid"
+      paymentStatus: "paid",
     },
     {
       _id: "p2",
       transactionId: "ch_mock_stripe_transaction_67890",
-      amount: 45.00,
+      amount: 45,
       paidAt: "2026-05-15T14:30:00Z",
-      paymentStatus: "paid"
-    }
+      paymentStatus: "paid",
+    },
   ];
 
   return (
-    <Card className="border border-white/5 bg-slate-900/40 backdrop-blur-xl shadow-2xl p-6 rounded-2xl">
-      <div className="p-0 overflow-x-auto">
-        <Table aria-label="Payment History Table" removeWrapper>
-          <TableContent>
-            <TableHeader className="bg-slate-950/40 border-b border-white/5 rounded-t-xl">
-              <TableColumn className="py-4 px-6 text-slate-400 font-extrabold uppercase text-[11px] tracking-wider border-b border-white/5 bg-slate-950/20" isRowHeader>TRANSACTION ID</TableColumn>
-              <TableColumn className="py-4 px-6 text-slate-400 font-extrabold uppercase text-[11px] tracking-wider border-b border-white/5 bg-slate-950/20">AMOUNT PAID</TableColumn>
-              <TableColumn className="py-4 px-6 text-slate-400 font-extrabold uppercase text-[11px] tracking-wider border-b border-white/5 bg-slate-950/20">DATE</TableColumn>
-              <TableColumn className="py-4 px-6 text-slate-400 font-extrabold uppercase text-[11px] tracking-wider border-b border-white/5 bg-slate-950/20">STATUS</TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={<p className="text-slate-500 py-10 text-center font-medium">No receipt records in transaction logs.</p>}>
-              {payments.map((p) => (
-                <TableRow key={p._id} className="border-b border-white/5 hover:bg-white/5 transition-colors duration-150 last:border-b-0">
-                  <TableCell className="py-4 px-6 align-middle font-semibold text-indigo-400 truncate max-w-[200px]">
-                    {p.transactionId}
-                  </TableCell>
-                  <TableCell className="py-4 px-6 align-middle font-bold text-green-400">${p.amount?.toFixed(2)}</TableCell>
-                  <TableCell className="py-4 px-6 align-middle text-slate-300 font-medium">{new Date(p.paidAt).toLocaleDateString()}</TableCell>
-                  <TableCell className="py-4 px-6 align-middle">
-                    <Chip
-                      size="sm"
-                      variant="flat"
-                      color={p.paymentStatus === "failed" ? "danger" : "success"}
-                      className="font-bold uppercase text-[10px] tracking-wider border border-white/5 px-2"
-                    >
-                      {p.paymentStatus || 'succeeded'}
-                    </Chip>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </TableContent>
+    <Card className="rounded-2xl border border-white/10 bg-slate-900/50 shadow-xl p-6">
+      <div className="overflow-x-auto">
+        <Table
+          aria-label="Payment History"
+          removeWrapper
+          classNames={{
+            th: "bg-slate-950 text-slate-300 text-xs font-bold uppercase",
+            td: "py-4",
+          }}
+        >
+          <TableHeader>
+            <TableColumn>TRANSACTION ID</TableColumn>
+            <TableColumn>AMOUNT</TableColumn>
+            <TableColumn>DATE</TableColumn>
+            <TableColumn>STATUS</TableColumn>
+          </TableHeader>
+
+          <TableBody
+            items={payments}
+            emptyContent="No payment history found."
+          >
+            {(payment) => (
+              <TableRow key={payment._id}>
+                <TableCell>
+                  <span className="font-mono text-indigo-400">
+                    {payment.transactionId}
+                  </span>
+                </TableCell>
+
+                <TableCell>
+                  <span className="font-bold text-green-400">
+                    ${payment.amount.toFixed(2)}
+                  </span>
+                </TableCell>
+
+                <TableCell>
+                  {new Date(payment.paidAt).toLocaleDateString()}
+                </TableCell>
+
+                <TableCell>
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    color={
+                      payment.paymentStatus === "paid"
+                        ? "success"
+                        : payment.paymentStatus === "pending"
+                        ? "warning"
+                        : "danger"
+                    }
+                    className="capitalize"
+                  >
+                    {payment.paymentStatus}
+                  </Chip>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
     </Card>
