@@ -19,17 +19,22 @@ export default function DeleteRecipeButton({ id }) {
 
     if (!result.isConfirmed) return;
 
-    const res = await fetch(`/api/admin/recipes/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/admin/recipes/${id}`, {
+        method: "DELETE",
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.success) {
-      Swal.fire("Deleted!", data.message, "success");
-      router.refresh();
-    } else {
-      Swal.fire("Error", data.message, "error");
+      if (data.success) {
+        Swal.fire("Deleted!", data.message, "success");
+        router.refresh();
+      } else {
+        Swal.fire("Error", data.message || "Failed to delete recipe.", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Something went wrong. Please try again.", "error");
     }
   };
 
@@ -42,3 +47,4 @@ export default function DeleteRecipeButton({ id }) {
     </button>
   );
 }
+
