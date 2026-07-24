@@ -3,7 +3,7 @@ import dbConnect from "@/lib/dbConnect";
 import { ObjectId } from "mongodb";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
-export async function PATCH(req, { params }) {
+export async function PATCH(req, context) {
   try {
     const user = await getCurrentUser();
 
@@ -14,13 +14,34 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    const { id } = await context.params;
+
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid Report ID" },
+        { status: 400 }
+      );
+    }
+
     const db = await dbConnect();
 
+    const report = await db.collection("reports").findOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!report) {
+      return NextResponse.json(
+        { success: false, message: "Report not found" },
+        { status: 404 }
+      );
+    }
+
     await db.collection("reports").updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       {
         $set: {
-          status: "Dismissed",
+          status: "dismissed",
+          dismissedAt: new Date(),
         },
       }
     );
@@ -30,6 +51,7 @@ export async function PATCH(req, { params }) {
       message: "Report dismissed.",
     });
   } catch (error) {
+    console.error("PATCH Report Error:", error);
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }

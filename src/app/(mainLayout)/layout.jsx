@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 export default function RootLayout({ children }) {
   return (
    
-    <div>
+    <div className="bg-white dark:bg-gray-800 dark:text-white">
       <Navbar />
       
       <div>{children}</div>

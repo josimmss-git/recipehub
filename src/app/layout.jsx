@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
+import Providers from "@/providers/ThemProvider";
 
 
 export const metadata = {
@@ -18,12 +19,13 @@ export default function RootLayout({ children }) {
     <html lang="en" className="h-full antialiased dark">
       <body className="min-h-full flex flex-col bg-[#080c16] text-[#f3f4f6]">
        
+        <Providers>  
         <main className="flex-grow flex flex-col">{children}
           <Toaster
             position="top-right"
           reverseOrder={false}/>
         </main>
-        
+        </Providers>
       </body>
     </html>
   );

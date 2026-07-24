@@ -37,12 +37,15 @@ export default function LikeButton({ recipeId }) {
   };
 
   return (
-    <Button
+    <button
       color="danger"
+      radius="full"
+      className="px-8 shadow-lg shadow-danger/30 hover:scale-105 transition-transform outline-2 outline-danger/50
+      rounded-full text-white font-semibold py-2 bg-danger"
       isLoading={loading}
       onPress={handleLike}
     >
       ❤️ Like Recipe
-    </Button>
+    </button>
   );
 }

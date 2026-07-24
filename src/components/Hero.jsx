@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <section className="bg-gradient-to-br from-orange-50 via-white to-green-50">
+    <section className="bg-gradient-to-br from-orange-50 via-white to-green-50 *:dark:bg-gray-900 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           

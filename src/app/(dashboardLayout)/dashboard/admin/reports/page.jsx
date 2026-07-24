@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
-import DeleteRecipeButton from "@/components/dashboard/DeleteRecipeButton";
+
 import MarkReviewedButton from "@/components/dashboard/admin/MarkReviewedButton";
+import DeleteRecipeButton from "@/components/dashboard/admin/DeleteRecipeButton";
 
 export default async function ReportsPage() {
   const db = await dbConnect();
@@ -83,7 +84,7 @@ export default async function ReportsPage() {
                   <td>
                     <div className="flex justify-center gap-2">
                       <DeleteRecipeButton
-                        id={report.recipeId}
+                        _id={report.recipeId}
                         className="btn btn-sm bg-red-500 hover:bg-red-600 text-white border-none"
                       >
                         Remove Recipe

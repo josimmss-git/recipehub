@@ -21,7 +21,7 @@ export default async function RecipeDetailsPage({ params }) {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
+    <div className="max-w-5xl flex flex-cols-1 mx-auto px-4 py-10">
       <div className="grid md:grid-cols-2 gap-10">
 
         <div>
@@ -82,7 +82,7 @@ export default async function RecipeDetailsPage({ params }) {
               {recipe.instructions}
             </div>
           </div>
-     <div className="flex flex-wrap gap-4   pt-4">
+     <div className="flex flex-col gap-4 pt-4">
      <LikeButton recipeId={recipe._id. toString()} />
 
   <FavoriteButton recipeId={recipe._id.toString()} />

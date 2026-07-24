@@ -118,10 +118,16 @@ export default async function ManageRecipesPage() {
                     <div className="flex justify-center gap-2">
 
                       <Link
-                        href={`/dashboard/admin/recipes/${recipe._id}`}
-                        className="btn btn-sm btn-warning"
+ 
+                        href={`/dashboard/admin/recipes/edit/${recipe._id}`}
+  
+                        className="btn btn-warning btn-sm"
+
                       >
+ 
+ 
                         <FaEdit />
+
                       </Link>
 
                       <DeleteRecipeButton
