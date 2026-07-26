@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import dbConnect from "@/lib/dbConnect";
 import { ObjectId } from "mongodb";
-import EditRecipeForm from "@/components/dashboard/admin/EditRecipeForm";
+import EditRecipeForm from "@/components/dashboard/EditRecipeForm";
 
 export default async function EditRecipePage({ params }) {
   const { id } = await params;

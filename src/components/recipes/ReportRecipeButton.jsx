@@ -40,13 +40,13 @@ export default function ReportRecipeButton({ recipeId }) {
   };
 
   return (
-    <button
-      color="cyan"
-      radius="full"
-      className="px-8 shadow-lg shadow-cyan/30 hover:scale-105 transition-transform outline-2 outline-cyan/50
-      rounded-full text-white font-semibold py-2 bg-cyan"
-      onPress={reportRecipe}>
-      Report Recipe
-    </button>
+    <Button
+  color="cyan"
+  radius="full"
+  className="px-8 shadow-lg shadow-cyan/30 hover:scale-105 transition-transform outline-2 outline-cyan/100"
+  onPress={reportRecipe}
+>
+  Report Recipe
+</Button>
   );
 }

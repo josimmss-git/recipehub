@@ -20,7 +20,7 @@ export default function DeleteRecipeButton({ id }) {
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch(`/api/admin/recipes/${id}`, {
+      const res = await fetch(`/api/recipes/${id}`, {
         method: "DELETE",
       });
 

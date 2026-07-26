@@ -33,7 +33,7 @@ export default function FavoriteButton({ recipeId }) {
   };
 
   return (
-    <button
+    <Button
       color="danger"
       radius="full"
       variant="outline"
@@ -41,6 +41,6 @@ export default function FavoriteButton({ recipeId }) {
       className="hover:scale-105 transition-transform bg-accent/10 text-accent font-semibold py-2 px-8 rounded-full outline-2 outline-accent/50"
     >
       ❤️ Favorite
-    </button>
+    </Button>
   );
 }

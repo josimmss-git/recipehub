@@ -84,7 +84,7 @@ export default async function ReportsPage() {
                   <td>
                     <div className="flex justify-center gap-2">
                       <DeleteRecipeButton
-                        _id={report.recipeId}
+                        id={report.recipeId}
                         className="btn btn-sm bg-red-500 hover:bg-red-600 text-white border-none"
                       >
                         Remove Recipe

@@ -36,7 +36,7 @@ export default function PurchaseButton({ recipe }) {
   };
 
   return (
-    <button
+    <Button
       color="success"
       radius="full"
       onClick={handlePurchase}
@@ -44,6 +44,6 @@ export default function PurchaseButton({ recipe }) {
       rounded-full text-white font-semibold py-2 bg-success"
     >
       Purchase
-    </button>
+    </Button>
   );
 }
