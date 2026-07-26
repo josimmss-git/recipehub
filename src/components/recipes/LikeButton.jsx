@@ -40,7 +40,7 @@ export default function LikeButton({ recipeId }) {
   <Button
   color="danger"
   radius="full"
-  className="px-8 shadow-lg shadow-danger/30 hover:scale-105 transition-transform outline-2 outline-danger/50"
+  className="px-8 shadow-lg shadow-danger/30 hover:scale-105 transition-transform outline-2 outline-danger/80"
   isLoading={loading}
   onPress={handleLike}
 >

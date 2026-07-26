@@ -4,6 +4,7 @@ import Statistics from "@/components/Statistics";
 import Testimonials from "@/components/Testimonials";
 import PopularRecipes from "@/components/PopularRecipes";
 
+
 export default function HomePage() {
  const stats = {
   totalRecipes: 1200,
@@ -15,6 +16,7 @@ export default function HomePage() {
     <div>
       <Hero />
       <PopularRecipes />
+      
       <WhyChoose />
       <Statistics stats={stats} />
       <Testimonials />
