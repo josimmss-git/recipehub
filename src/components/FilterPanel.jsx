@@ -142,7 +142,7 @@ export default function FilterPanel() {
         <div className="flex gap-2">
           <Button
             color="warning"
-            startContent={<FaFilter />}
+            // startContent={<FaFilter />}
             onPress={handleApply}
             className="flex-1 font-semibold"
 

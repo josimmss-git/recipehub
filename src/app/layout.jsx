@@ -1,9 +1,42 @@
+// import Navbar from "@/components/Navbar";
+// import "./globals.css";
+// import Footer from "@/components/Footer";
+// import { Toaster } from "react-hot-toast";
+// import Providers from "@/providers/ThemProvider";
+
+
+// export const metadata = {
+//   title: {
+//     default: "RecipeHub | Share & Discover Amazing Recipes",
+//     template: "%s | RecipeHub",
+//   },
+//   description:
+//     "RecipeHub is a modern recipe sharing platform where users can discover, create, save, and purchase delicious recipes.",
+// };
+
+// export default function RootLayout({ children }) {
+//   return (
+//     <html lang="en" className="h-full antialiased dark">
+//       <body className="min-h-full flex flex-col bg-[#080c16] text-[#f3f4f6]">
+       
+//         <Providers>
+//         <main className="flex-grow flex flex-col">{children}
+//           <Toaster
+//             position="top-right"
+//           reverseOrder={false}/>
+//         </main>
+//         </Providers>
+//       </body>
+//     </html>
+//   );
+// }
+
+
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import Providers from "@/providers/ThemProvider";
-
 
 export const metadata = {
   title: {
@@ -16,15 +49,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="h-full antialiased dark">
+    <html lang="en" className="h-full antialiased dark" suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-[#080c16] text-[#f3f4f6]">
-       
-        <Providers>  
-        <main className="flex-grow flex flex-col">{children}
-          <Toaster
-            position="top-right"
-          reverseOrder={false}/>
-        </main>
+        <Providers>
+          <main className="flex-grow flex flex-col">
+            {children}
+            <Toaster position="top-right" reverseOrder={false} />
+          </main>
         </Providers>
       </body>
     </html>
