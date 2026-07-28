@@ -11,7 +11,7 @@ const db = client.db(process.env.DB_NAME);
 
 export const auth = betterAuth({
    baseURL: process.env.BETTER_AUTH_URL || "https://recipehub-server-dusky.vercel.app",
-  trustedOrigins: [process.env.CLIENT_URL || "http://localhost:3000"],
+  trustedOrigins: [process.env.CLIENT_URL || "https://recipehub-self.vercel.app"],
 
   database: mongodbAdapter(db, {
     client,
