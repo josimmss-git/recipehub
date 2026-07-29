@@ -28,7 +28,7 @@ export default function Navbar() {
   const user = session?.user;
 
   // role এর স্পেস বাদ দিয়ে hyphen দিয়ে slug বানানো
-  // যেমন: "normal user" -> "normal-user", "premium user" -> "premium-user"
+  // যেমন: "user" -> "user", "premium" -> "premium"
   // fallback "user" রাখা হয়েছে যাতে এটা app/dashboard/user ফোল্ডারের নামের সাথে মেলে
   const roleSlug = user?.role
     ? user.role.trim().toLowerCase().replace(/\s+/g, "-")

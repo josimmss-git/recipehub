@@ -42,6 +42,9 @@ export const auth = betterAuth({
       isBlocked: {
         defaultValue: false,
       },
+      plan: {
+    defaultValue: "free", // free | premium
+  },
     },
   },
 
@@ -52,8 +55,6 @@ export const auth = betterAuth({
       strategy:'jwt'
     },
   },
-  plan: {
-    defaultValue: "free", // free | premium
-  },
+  
   plugins:[jwt()]
 });

@@ -104,6 +104,13 @@ export default function RegisterPage() {
   const onSubmit = async (data) => {
     setServerError("");
     setIsLoading(true);
+
+    // await authClient.signUp.email({
+
+    //   ...user,
+    //   plan: `free`,
+    // });
+
     try {
       const { data: signUpData, error } = await authClient.signUp.email({
         ...data,
@@ -305,7 +312,7 @@ export default function RegisterPage() {
             </TextField>
 
             {/* Role */}
-            {/* <div className="flex flex-col gap-2 w-full">
+             <div className="flex flex-col gap-2 w-full">
               <Label
                 htmlFor="role"
                 className="text-sm font-semibold text-slate-300"
@@ -314,17 +321,17 @@ export default function RegisterPage() {
               </Label>
               <select
                 id="role"
-                defaultValue="normal user"
+                defaultValue="user"
                 {...register("role", { required: "Role is required" })}
                 className="w-full rounded-lg bg-slate-900/50 border border-white/10 hover:border-pink-500/50 focus:!border-pink-500 text-white px-3 h-10 outline-none"
               >
-                <option value="normalUser">User</option>
-                <option value="premiumUser">Premium</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
               </select>
               {errors.role && (
                 <p className="text-red-400 text-xs">{errors.role.message}</p>
               )}
-            </div> */}
+            </div> 
 
             <Button
               type="submit"

@@ -15,7 +15,7 @@ export default function RoleButton({ id, role }) {
     const result = await Swal.fire({
       title: isAdmin ? "Remove Admin?" : "Make Admin?",
       text: isAdmin
-        ? "This user will be changed to a normal user."
+        ? "This user will be changed to a user."
         : "This user will become an administrator.",
       icon: "warning",
       showCancelButton: true,
